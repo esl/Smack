@@ -21,7 +21,7 @@ public class MessageCorrection implements ExtensionElement{
 
 	@Override
 	public CharSequence toXML() {
-		return "<" + ELEMENT + " " + JID_TAG + "=" + getJidPreviousMessage() + " xmlns='" + NAMESPACE + ">";
+		return "<" + ELEMENT + " " + JID_TAG + "='" + getJidPreviousMessage() + "' xmlns='" + NAMESPACE + "'/>";
 	}
 
 	@Override
