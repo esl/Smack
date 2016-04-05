@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
  */
 
 /**
- * A REPL (Read Eval Print Loop) for Smack.
+ * XMPP stream elements for Last Message Correction as defined in XEP-0308.
  */
-package org.igniterealtime.smack.repl;
+package org.jivesoftware.smackx.message_correct.element;

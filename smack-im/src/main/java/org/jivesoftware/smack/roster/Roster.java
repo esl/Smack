@@ -110,6 +110,7 @@ public final class Roster extends Manager {
      * {@link RosterListener}s will throw an IllegalStateException.
      * </p>
      * 
+     * @param connection the connection the roster should be retrieved for.
      * @return the user's roster.
      */
     public static synchronized Roster getInstanceFor(XMPPConnection connection) {
@@ -1059,6 +1060,18 @@ public final class Roster extends Manager {
         default:
             return false;
         }
+    }
+
+    /**
+     * Sets if the roster will be loaded from the server when logging in for newly created instances
+     * of {@link Roster}.
+     *
+     * @param rosterLoadedAtLoginDefault if the roster will be loaded from the server when logging in.
+     * @see #setRosterLoadedAtLogin(boolean)
+     * @since 4.1.7
+     */
+    public static void setRosterLoadedAtLoginDefault(boolean rosterLoadedAtLoginDefault) {
+        Roster.rosterLoadedAtLoginDefault = rosterLoadedAtLoginDefault;
     }
 
     /**

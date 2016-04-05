@@ -14,21 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.igniterealtime.smack.repl;
 
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.util.dns.javax.JavaxResolver;
-
-public class SmackRepl {
-
-    public static void init() {
-        SmackConfiguration.getVersion();
-        // smack-repl also pulls in smack-resolver-minidns which has higher precedence the smack-resolver-javax but
-        // won't work on Java SE platforms. Therefore explicitly setup JavaxResolver.
-        JavaxResolver.setup();
-        // CHECKSTYLE:OFF
-        System.out.println("Smack REPL");
-        // CHECKSTYLE:ON
-    }
-
-}
+/**
+ * A REPL (Read Eval Print Loop) for Smack.
+ */
+package org.igniterealtime.smack.smackrepl;
