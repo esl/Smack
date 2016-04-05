@@ -16,9 +16,15 @@
  */
 package org.jivesoftware.smackx.message.correction;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import java.io.IOException;
 
-public class MessageCorrection implements ExtensionElement{
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+public class MessageCorrection implements ExtensionElement {
 
     public static final String ELEMENT = "replace";
     public static final String NAMESPACE = "urn:xmpp:message-correct:0";
@@ -52,5 +58,21 @@ public class MessageCorrection implements ExtensionElement{
 	public String getNamespace() {
 		return NAMESPACE;
 	}
+	
+    public static class Provider extends ExtensionElementProvider<MessageCorrection> {
+
+        @Override
+        public MessageCorrection parse(XmlPullParser parser, int initialDepth) 
+        		throws XmlPullParserException, IOException, SmackException {
+            int tag = parser.next();
+            String jid = null;
+            if ((tag == XmlPullParser.START_TAG) && parser.getName().equals(ELEMENT)) {
+                tag = parser.next();
+                jid = parser.getAttributeValue(null, JID_TAG);
+            }
+            while (parser.getEventType() != XmlPullParser.END_TAG) parser.next();
+            return new MessageCorrection(jid);
+        }
+    }
     
 }
