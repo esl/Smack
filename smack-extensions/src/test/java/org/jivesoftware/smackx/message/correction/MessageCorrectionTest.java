@@ -28,7 +28,7 @@ public class MessageCorrectionTest {
 	
 	private final String jidInitialMessage = "bad1";
    
-	private final String initialMessageXml = 
+	private final String initialMessageXml =
 			"<message to='juliet@capulet.net/balcony' id='good1'>"
 			+ "<body>But soft, what light through yonder window breaks?</body>"
 			+ "</message>";

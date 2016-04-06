@@ -30,18 +30,18 @@ public class MessageCorrection implements ExtensionElement {
     public static final String NAMESPACE = "urn:xmpp:message-correct:0";
     private static final String JID_TAG = "id";
 
-    private String jidPreviousMessage;
+    private String jidInitialMessage;
 
-    public MessageCorrection(String jidPreviousMessage) {
-        this.setJidPreviousMessage(jidPreviousMessage);
+    public MessageCorrection(String jidInitialMessage) {
+        this.setJidInitialMessage(jidInitialMessage);
     }
 	
-    public String getJidPreviousMessage() {
-		return jidPreviousMessage;
+    public String getJidInitialMessage() {
+		return jidInitialMessage;
 	}
 
-	public void setJidPreviousMessage(String jidPreviousMessage) {
-		this.jidPreviousMessage = jidPreviousMessage;
+	public void setJidInitialMessage(String jidInitialMessage) {
+		this.jidInitialMessage = jidInitialMessage;
 	}
     
 	@Override
@@ -51,7 +51,7 @@ public class MessageCorrection implements ExtensionElement {
 
 	@Override
 	public CharSequence toXML() {
-		return "<" + ELEMENT + " " + JID_TAG + "='" + getJidPreviousMessage() + "' xmlns='" + NAMESPACE + "'/>";
+		return "<" + ELEMENT + " " + JID_TAG + "='" + getJidInitialMessage() + "' xmlns='" + NAMESPACE + "'/>";
 	}
 
 	@Override
@@ -61,18 +61,19 @@ public class MessageCorrection implements ExtensionElement {
 	
     public static class Provider extends ExtensionElementProvider<MessageCorrection> {
 
-        @Override
-        public MessageCorrection parse(XmlPullParser parser, int initialDepth) 
-        		throws XmlPullParserException, IOException, SmackException {
-            int tag = parser.next();
-            String jid = null;
-            if ((tag == XmlPullParser.START_TAG) && parser.getName().equals(ELEMENT)) {
-                tag = parser.next();
-                jid = parser.getAttributeValue(null, JID_TAG);
-            }
-            while (parser.getEventType() != XmlPullParser.END_TAG) parser.next();
-            return new MessageCorrection(jid);
-        }
+		@Override
+		public MessageCorrection parse(XmlPullParser parser, int initialDepth)
+				throws XmlPullParserException, IOException, SmackException {
+			String jidMessageToReplace;
+
+			try {
+				jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
+			} catch (Exception ex) {
+				jidMessageToReplace = "";
+			}
+
+			return new MessageCorrection(jidMessageToReplace);
+		}
     }
     
 }
