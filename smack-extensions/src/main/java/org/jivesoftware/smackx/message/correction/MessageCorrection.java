@@ -26,24 +26,24 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class MessageCorrection implements ExtensionElement {
 
-    public static final String ELEMENT = "replace";
-    public static final String NAMESPACE = "urn:xmpp:message-correct:0";
-    private static final String JID_TAG = "id";
+	public static final String ELEMENT = "replace";
+	public static final String NAMESPACE = "urn:xmpp:message-correct:0";
+	private static final String JID_TAG = "id";
 
-    private String jidInitialMessage;
+	private String jidInitialMessage;
 
-    public MessageCorrection(String jidInitialMessage) {
-        this.setJidInitialMessage(jidInitialMessage);
-    }
-	
-    public String getJidInitialMessage() {
+	public MessageCorrection(String jidInitialMessage) {
+		this.setJidInitialMessage(jidInitialMessage);
+	}
+
+	public String getJidInitialMessage() {
 		return jidInitialMessage;
 	}
 
 	public void setJidInitialMessage(String jidInitialMessage) {
 		this.jidInitialMessage = jidInitialMessage;
 	}
-    
+
 	@Override
 	public String getElementName() {
 		return ELEMENT;
@@ -58,8 +58,8 @@ public class MessageCorrection implements ExtensionElement {
 	public String getNamespace() {
 		return NAMESPACE;
 	}
-	
-    public static class Provider extends ExtensionElementProvider<MessageCorrection> {
+
+	public static class Provider extends ExtensionElementProvider<MessageCorrection> {
 
 		@Override
 		public MessageCorrection parse(XmlPullParser parser, int initialDepth)
@@ -74,6 +74,6 @@ public class MessageCorrection implements ExtensionElement {
 
 			return new MessageCorrection(jidMessageToReplace);
 		}
-    }
-    
+	}
+
 }
