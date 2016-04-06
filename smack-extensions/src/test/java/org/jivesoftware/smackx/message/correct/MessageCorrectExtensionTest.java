@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.message.correction;
+package org.jivesoftware.smackx.message.correct;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.message.correct.MessageCorrectExtension;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MessageCorrectionTest {
+public class MessageCorrectExtensionTest {
 
     private Message initialMessage;
 
@@ -44,11 +45,11 @@ public class MessageCorrectionTest {
 
     @Test
     public void checkStanzas() throws Exception {
-        MessageCorrection messageCorrection = new MessageCorrection(jidInitialMessage);
+        MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(jidInitialMessage);
 
-        Assert.assertEquals(messageCorrection.toXML(), messageCorrectionXml);
+        Assert.assertEquals(messageCorrectExtension.toXML(), messageCorrectionXml);
 
-        initialMessage.addExtension(messageCorrection);
+        initialMessage.addExtension(messageCorrectExtension);
 
         Assert.assertEquals(initialMessage.toXML(), expectedXml);
     }
