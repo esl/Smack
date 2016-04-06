@@ -26,54 +26,54 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class MessageCorrection implements ExtensionElement {
 
-	public static final String ELEMENT = "replace";
-	public static final String NAMESPACE = "urn:xmpp:message-correct:0";
-	private static final String JID_TAG = "id";
+    public static final String ELEMENT = "replace";
+    public static final String NAMESPACE = "urn:xmpp:message-correct:0";
+    private static final String JID_TAG = "id";
 
-	private String jidInitialMessage;
+    private String jidInitialMessage;
 
-	public MessageCorrection(String jidInitialMessage) {
-		this.setJidInitialMessage(jidInitialMessage);
-	}
+    public MessageCorrection(String jidInitialMessage) {
+        this.setJidInitialMessage(jidInitialMessage);
+    }
 
-	public String getJidInitialMessage() {
-		return jidInitialMessage;
-	}
+    public String getJidInitialMessage() {
+        return jidInitialMessage;
+    }
 
-	public void setJidInitialMessage(String jidInitialMessage) {
-		this.jidInitialMessage = jidInitialMessage;
-	}
+    public void setJidInitialMessage(String jidInitialMessage) {
+        this.jidInitialMessage = jidInitialMessage;
+    }
 
-	@Override
-	public String getElementName() {
-		return ELEMENT;
-	}
+    @Override
+    public String getElementName() {
+        return ELEMENT;
+    }
 
-	@Override
-	public CharSequence toXML() {
-		return "<" + ELEMENT + " " + JID_TAG + "='" + getJidInitialMessage() + "' xmlns='" + NAMESPACE + "'/>";
-	}
+    @Override
+    public CharSequence toXML() {
+        return "<" + ELEMENT + " " + JID_TAG + "='" + getJidInitialMessage() + "' xmlns='" + NAMESPACE + "'/>";
+    }
 
-	@Override
-	public String getNamespace() {
-		return NAMESPACE;
-	}
+    @Override
+    public String getNamespace() {
+        return NAMESPACE;
+    }
 
-	public static class Provider extends ExtensionElementProvider<MessageCorrection> {
+    public static class Provider extends ExtensionElementProvider<MessageCorrection> {
 
-		@Override
-		public MessageCorrection parse(XmlPullParser parser, int initialDepth)
-				throws XmlPullParserException, IOException, SmackException {
-			String jidMessageToReplace;
+        @Override
+        public MessageCorrection parse(XmlPullParser parser, int initialDepth)
+                throws XmlPullParserException, IOException, SmackException {
+            String jidMessageToReplace;
 
-			try {
-				jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
-			} catch (Exception ex) {
-				jidMessageToReplace = "";
-			}
+            try {
+                jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
+            } catch (Exception ex) {
+                jidMessageToReplace = "";
+            }
 
-			return new MessageCorrection(jidMessageToReplace);
-		}
-	}
+            return new MessageCorrection(jidMessageToReplace);
+        }
+    }
 
 }
