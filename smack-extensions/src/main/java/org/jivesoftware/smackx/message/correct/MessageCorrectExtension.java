@@ -27,12 +27,12 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * An Extension that implements XEP-0308: Last Message Correction
  * 
- * This extension is expected to be added to message stanzas.
- * Please refer to the XEP for more implementation guidelines.
+ * This extension is expected to be added to message stanzas. Please refer to
+ * the XEP for more implementation guidelines.
  * 
  * @author Fernando Ramirez, f.e.ramirez94@gmail.com
- * @see <a href="https://xmpp.org/extensions/xep-0308.html">
- *      XEP-0308:&nbsp;Last&nbsp;Message&nbsp;Correction</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0308.html"> XEP-0308:&nbsp;Last
+ *      &nbsp;Message&nbsp;Correction</a>
  */
 public class MessageCorrectExtension implements ExtensionElement {
 
@@ -112,13 +112,7 @@ public class MessageCorrectExtension implements ExtensionElement {
         public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
                 throws XmlPullParserException, IOException, SmackException {
             String jidMessageToReplace;
-
-            try {
-                jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
-            } catch (Exception ex) {
-                jidMessageToReplace = "";
-            }
-
+            jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
             return new MessageCorrectExtension(jidMessageToReplace);
         }
     }
