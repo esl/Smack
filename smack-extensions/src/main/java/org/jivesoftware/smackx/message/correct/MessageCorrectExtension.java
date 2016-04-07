@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * @author Fernando Ramirez, f.e.ramirez94@gmail.com
  */
 package org.jivesoftware.smackx.message.correct;
 
@@ -89,17 +87,8 @@ public class MessageCorrectExtension implements ExtensionElement {
     @Override
     public CharSequence toXML() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('<')
-        .append(getElementName())
-        .append(' ')
-        .append(JID_TAG)
-        .append('=')
-        .append('\'')
-        .append(getJidInitialMessage())
-        .append('\'')
-        .append(" xmlns='")
-        .append(getNamespace())
-        .append("'/>");
+        stringBuilder.append('<').append(getElementName()).append(' ').append(JID_TAG).append('=').append('\'')
+                .append(getJidInitialMessage()).append('\'').append(" xmlns='").append(getNamespace()).append("'/>");
         return stringBuilder.toString();
     }
 
