@@ -31,8 +31,6 @@ import org.xmlpull.v1.XmlPullParserException;
  * the XEP for more implementation guidelines.
  * 
  * @author Fernando Ramirez, f.e.ramirez94@gmail.com
- * @see <a href="https://xmpp.org/extensions/xep-0308.html"> XEP-0308:&nbsp;Last
- *      &nbsp;Message&nbsp;Correction</a>
  */
 public class MessageCorrectExtension implements ExtensionElement {
 
