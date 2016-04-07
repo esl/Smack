@@ -87,9 +87,17 @@ public class MessageCorrectExtension implements ExtensionElement {
     @Override
     public CharSequence toXML() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('<').append(getElementName()).append(" ")
-        .append(JID_TAG).append("='").append(getJidInitialMessage())
-        .append("' xmlns='").append(getNamespace()).append("'/>");
+        stringBuilder.append('<')
+        .append(getElementName())
+        .append(' ')
+        .append(JID_TAG)
+        .append('=')
+        .append('\'')
+        .append(getJidInitialMessage())
+        .append('\'')
+        .append(" xmlns='")
+        .append(getNamespace())
+        .append("'/>");
         return stringBuilder.toString();
     }
 
