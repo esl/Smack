@@ -96,7 +96,8 @@ public class MessageCorrectExtension implements ExtensionElement {
         .append(getJidInitialMessage())
         .append('\'')
         .append(" xmlns='")
-        .append(getNamespace()).append("'/>");
+        .append(getNamespace())
+        .append("'/>");
         return stringBuilder.toString();
     }
 
