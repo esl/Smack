@@ -101,9 +101,8 @@ public class MessageCorrectExtension implements ExtensionElement {
     }
 
     /**
-     * A {@link ExtensionElementProvider} for the
-     * {@link MessageCorrectExtension}. As MessageCorrection elements have only
-     * the JID of the message to replace {@link MessageCorrectExtension}.
+     * A ExtensionElementProvider for the MessageCorrectExtension. 
+     * As MessageCorrection elements have only the JID of the message to replace.
      * 
      * @author Fernando Ramirez, f.e.ramirez94@gmail.com
      */
