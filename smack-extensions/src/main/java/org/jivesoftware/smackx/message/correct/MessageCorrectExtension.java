@@ -92,10 +92,6 @@ public class MessageCorrectExtension implements ExtensionElement {
         xml.append('/');
         xml.rightAngleBracket();
         
-//        for (String method : methods) {
-//            xml.element("method", method);
-//        }
-        
         return xml;
         
 //        final StringBuilder stringBuilder = new StringBuilder();
