@@ -46,7 +46,7 @@ public class MessageCorrectExtensionTest {
     public void checkStanzas() throws Exception {
         MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(jidInitialMessage);
 
-        Assert.assertEquals(messageCorrectExtension.toXML(), messageCorrectionXml);
+        Assert.assertEquals(messageCorrectExtension.toXML().toString(), messageCorrectionXml);
 
         initialMessage.addExtension(messageCorrectExtension);
 

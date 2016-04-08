@@ -1,6 +1,6 @@
 /**
  *
- * Copyright the original author or authors
+ * Copyright 2016 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -37,7 +38,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     /**
      * The XML element name of a 'message correct' extension.
      */
-    public static final String ELEMENT_NAME = "replace";
+    public static final String ELEMENT = "replace";
 
     /**
      * The namespace that qualifies the XML element of a 'message correct'
@@ -74,7 +75,7 @@ public class MessageCorrectExtension implements ExtensionElement {
      */
     @Override
     public String getElementName() {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     /*
@@ -83,11 +84,24 @@ public class MessageCorrectExtension implements ExtensionElement {
      * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
      */
     @Override
-    public CharSequence toXML() {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('<').append(getElementName()).append(' ').append(JID_TAG).append('=').append('\'')
-                .append(getJidInitialMessage()).append('\'').append(" xmlns='").append(getNamespace()).append("'/>");
-        return stringBuilder.toString();
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this, getNamespace());
+        
+        xml.attribute(JID_TAG, getJidInitialMessage());
+        xml.attribute("xmlns", getNamespace());
+        xml.append('/');
+        xml.rightAngleBracket();
+        
+//        for (String method : methods) {
+//            xml.element("method", method);
+//        }
+        
+        return xml;
+        
+//        final StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append('<').append(getElementName()).append(' ').append(JID_TAG).append('=').append('\'')
+//                .append(getJidInitialMessage()).append('\'').append(" xmlns='").append(getNamespace()).append("'/>");
+//        return stringBuilder.toString();
     }
 
     /*
