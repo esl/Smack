@@ -26,7 +26,11 @@ import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A ExtensionElementProvider for the MessageCorrectExtension. As
+<<<<<<< HEAD
  * MessageCorrection elements have only the ID of the message to replace.
+=======
+ * MessageCorrection elements have only the JID of the message to replace.
+>>>>>>> master
  * 
  * @author Fernando Ramirez, f.e.ramirez94@gmail.com
  */
