@@ -32,16 +32,12 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorrectExtension> {
 
-    /**
-     * The id tag of a 'message correct' extension.
-     */
-    private static final String ID_TAG = "id";
-
     @Override
     public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
             throws XmlPullParserException, IOException, SmackException {
         String jidMessageToReplace;
-        jidMessageToReplace = parser.getAttributeValue("", ID_TAG);
+        jidMessageToReplace = parser.getAttributeValue("", MessageCorrectExtension.ID_TAG);
         return new MessageCorrectExtension(jidMessageToReplace);
     }
+
 }

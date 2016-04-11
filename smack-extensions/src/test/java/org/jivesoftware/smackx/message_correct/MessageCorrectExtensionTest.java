@@ -30,11 +30,11 @@ public class MessageCorrectExtensionTest {
     private final String initialMessageXml = "<message to='juliet@capulet.net/balcony' id='good1'>"
             + "<body>But soft, what light through yonder window breaks?</body>" + "</message>";
 
-    private final CharSequence messageCorrectionXml = "<replace id='bad1' xmlns='urn:xmpp:message-correct:0'/>";
+    private final CharSequence messageCorrectionXml = "<replace xmlns='urn:xmpp:message-correct:0' id='bad1'/>";
 
     private final CharSequence expectedXml = "<message to='juliet@capulet.net/balcony' id='good1'>"
             + "<body>But soft, what light through yonder window breaks?</body>"
-            + "<replace id='bad1' xmlns='urn:xmpp:message-correct:0'/>" + "</message>";
+            + "<replace xmlns='urn:xmpp:message-correct:0' id='bad1'/>" + "</message>";
 
     @Test
     public void checkStanzas() throws Exception {
