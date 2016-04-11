@@ -35,9 +35,9 @@ public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorr
     @Override
     public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
             throws XmlPullParserException, IOException, SmackException {
-        String jidMessageToReplace;
-        jidMessageToReplace = parser.getAttributeValue("", MessageCorrectExtension.ID_TAG);
-        return new MessageCorrectExtension(jidMessageToReplace);
+        String idMessageToReplace;
+        idMessageToReplace = parser.getAttributeValue("", MessageCorrectExtension.ID_TAG);
+        return new MessageCorrectExtension(idMessageToReplace);
     }
 
 }
