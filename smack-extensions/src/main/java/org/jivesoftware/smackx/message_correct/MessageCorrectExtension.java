@@ -27,8 +27,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * the XEP for more implementation guidelines.
  * 
  * @author Fernando Ramirez, f.e.ramirez94@gmail.com
- * @see <a
- *      href="http://xmpp.org/extensions/xep-0308.html">XEP-0308:&nbsp;Last&nbsp;Message&nbsp;Correction</a>
+ * @see <a href="http://xmpp.org/extensions/xep-0308.html">XEP-0308:&nbsp;Last&
+ *      nbsp;Message&nbsp;Correction</a>
  */
 public class MessageCorrectExtension implements ExtensionElement {
 
@@ -56,7 +56,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     public MessageCorrectExtension(String idInitialMessage) {
         this.setIdInitialMessage(idInitialMessage);
     }
-    
+
     public String getIdInitialMessage() {
         return idInitialMessage;
     }
@@ -103,5 +103,5 @@ public class MessageCorrectExtension implements ExtensionElement {
     public static MessageCorrectExtension from(Message message) {
         return new MessageCorrectExtension(message.getStanzaId());
     }
-    
+
 }

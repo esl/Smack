@@ -36,7 +36,7 @@ public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorr
      * The id tag of a 'message correct' extension.
      */
     private static final String ID_TAG = "id";
-    
+
     @Override
     public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
             throws XmlPullParserException, IOException, SmackException {
