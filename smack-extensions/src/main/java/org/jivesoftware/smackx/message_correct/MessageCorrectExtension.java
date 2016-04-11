@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.message.correct;
+package org.jivesoftware.smackx.message_correct;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -26,6 +27,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * the XEP for more implementation guidelines.
  * 
  * @author Fernando Ramirez, f.e.ramirez94@gmail.com
+ * @see <a
+ *      href="http://xmpp.org/extensions/xep-0308.html">XEP-0308:&nbsp;Last&nbsp;Message&nbsp;Correction</a>
  */
 public class MessageCorrectExtension implements ExtensionElement {
 
@@ -43,23 +46,23 @@ public class MessageCorrectExtension implements ExtensionElement {
     /**
      * The id tag of a 'message correct' extension.
      */
-    private static final String JID_TAG = "id";
+    private static final String ID_TAG = "id";
 
     /**
      * The jid of the message to correct.
      */
-    private String jidInitialMessage;
+    private String idInitialMessage;
 
-    public MessageCorrectExtension(String jidInitialMessage) {
-        this.setJidInitialMessage(jidInitialMessage);
+    public MessageCorrectExtension(String idInitialMessage) {
+        this.setIdInitialMessage(idInitialMessage);
+    }
+    
+    public String getIdInitialMessage() {
+        return idInitialMessage;
     }
 
-    public String getJidInitialMessage() {
-        return jidInitialMessage;
-    }
-
-    public void setJidInitialMessage(String jidInitialMessage) {
-        this.jidInitialMessage = jidInitialMessage;
+    public void setIdInitialMessage(String idInitialMessage) {
+        this.idInitialMessage = idInitialMessage;
     }
 
     /*
@@ -80,7 +83,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this, getNamespace());
-        xml.attribute(JID_TAG, getJidInitialMessage());
+        xml.attribute(ID_TAG, getIdInitialMessage());
         xml.attribute("xmlns", getNamespace());
         xml.append('/');
         xml.rightAngleBracket();
@@ -97,4 +100,8 @@ public class MessageCorrectExtension implements ExtensionElement {
         return NAMESPACE;
     }
 
+    public static MessageCorrectExtension from(Message message) {
+        return new MessageCorrectExtension(message.getStanzaId());
+    }
+    
 }

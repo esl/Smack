@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.message.correct;
+package org.jivesoftware.smackx.message_correct;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smackx.message_correct.MessageCorrectExtension;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class MessageCorrectExtensionTest {
 
     private Message initialMessage;
 
-    private final String jidInitialMessage = "bad1";
+    private final String idInitialMessage = "bad1";
 
     private final String initialMessageXml = "<message to='juliet@capulet.net/balcony' id='good1'>"
             + "<body>But soft, what light through yonder window breaks?</body>" + "</message>";
@@ -37,14 +38,10 @@ public class MessageCorrectExtensionTest {
             + "<body>But soft, what light through yonder window breaks?</body>"
             + "<replace id='bad1' xmlns='urn:xmpp:message-correct:0'/>" + "</message>";
 
-    @Before
-    public void setStanzas() throws Exception {
-        initialMessage = (Message) PacketParserUtils.parseStanza(initialMessageXml);
-    }
-
     @Test
     public void checkStanzas() throws Exception {
-        MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(jidInitialMessage);
+        initialMessage = (Message) PacketParserUtils.parseStanza(initialMessageXml);
+        MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(idInitialMessage);
 
         Assert.assertEquals(messageCorrectExtension.toXML().toString(), messageCorrectionXml);
 

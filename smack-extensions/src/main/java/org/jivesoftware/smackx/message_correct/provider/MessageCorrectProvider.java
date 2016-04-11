@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.message.correct.provider;
+package org.jivesoftware.smackx.message_correct.provider;
 
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smackx.message.correct.MessageCorrectExtension;
+import org.jivesoftware.smackx.message_correct.MessageCorrectExtension;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -35,13 +35,13 @@ public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorr
     /**
      * The id tag of a 'message correct' extension.
      */
-    private static final String JID_TAG = "id";
+    private static final String ID_TAG = "id";
     
     @Override
     public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
             throws XmlPullParserException, IOException, SmackException {
         String jidMessageToReplace;
-        jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
+        jidMessageToReplace = parser.getAttributeValue("", ID_TAG);
         return new MessageCorrectExtension(jidMessageToReplace);
     }
 }
