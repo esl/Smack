@@ -18,4 +18,4 @@
 /**
  * Classes and Interfaces that implement Last Message Correction as defined in XEP-0308.
  */
-package org.jivesoftware.smackx.message.correct;
+package org.jivesoftware.smackx.message_correct;

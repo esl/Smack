@@ -1,6 +1,6 @@
 /**
  *
- * Copyright the original author or authors
+ * Copyright 2016 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.message.correct;
+package org.jivesoftware.smackx.message_correct;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * An Extension that implements XEP-0308: Last Message Correction
@@ -31,13 +27,15 @@ import org.xmlpull.v1.XmlPullParserException;
  * the XEP for more implementation guidelines.
  * 
  * @author Fernando Ramirez, f.e.ramirez94@gmail.com
+ * @see <a href="http://xmpp.org/extensions/xep-0308.html">XEP-0308:&nbsp;Last&
+ *      nbsp;Message&nbsp;Correction</a>
  */
 public class MessageCorrectExtension implements ExtensionElement {
 
     /**
      * The XML element name of a 'message correct' extension.
      */
-    public static final String ELEMENT_NAME = "replace";
+    public static final String ELEMENT = "replace";
 
     /**
      * The namespace that qualifies the XML element of a 'message correct'
@@ -48,23 +46,23 @@ public class MessageCorrectExtension implements ExtensionElement {
     /**
      * The id tag of a 'message correct' extension.
      */
-    private static final String JID_TAG = "id";
+    private static final String ID_TAG = "id";
 
     /**
      * The jid of the message to correct.
      */
-    private String jidInitialMessage;
+    private String idInitialMessage;
 
-    public MessageCorrectExtension(String jidInitialMessage) {
-        this.setJidInitialMessage(jidInitialMessage);
+    public MessageCorrectExtension(String idInitialMessage) {
+        this.setIdInitialMessage(idInitialMessage);
     }
 
-    public String getJidInitialMessage() {
-        return jidInitialMessage;
+    public String getIdInitialMessage() {
+        return idInitialMessage;
     }
 
-    public void setJidInitialMessage(String jidInitialMessage) {
-        this.jidInitialMessage = jidInitialMessage;
+    public void setIdInitialMessage(String idInitialMessage) {
+        this.idInitialMessage = idInitialMessage;
     }
 
     /*
@@ -74,7 +72,7 @@ public class MessageCorrectExtension implements ExtensionElement {
      */
     @Override
     public String getElementName() {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     /*
@@ -83,11 +81,13 @@ public class MessageCorrectExtension implements ExtensionElement {
      * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
      */
     @Override
-    public CharSequence toXML() {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('<').append(getElementName()).append(' ').append(JID_TAG).append('=').append('\'')
-                .append(getJidInitialMessage()).append('\'').append(" xmlns='").append(getNamespace()).append("'/>");
-        return stringBuilder.toString();
+    public XmlStringBuilder toXML() {
+        XmlStringBuilder xml = new XmlStringBuilder(this, getNamespace());
+        xml.attribute(ID_TAG, getIdInitialMessage());
+        xml.attribute("xmlns", getNamespace());
+        xml.append('/');
+        xml.rightAngleBracket();
+        return xml;
     }
 
     /*
@@ -100,21 +100,8 @@ public class MessageCorrectExtension implements ExtensionElement {
         return NAMESPACE;
     }
 
-    /**
-     * A ExtensionElementProvider for the MessageCorrectExtension. 
-     * As MessageCorrection elements have only the JID of the message to replace.
-     * 
-     * @author Fernando Ramirez, f.e.ramirez94@gmail.com
-     */
-    public static class Provider extends ExtensionElementProvider<MessageCorrectExtension> {
-
-        @Override
-        public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
-                throws XmlPullParserException, IOException, SmackException {
-            String jidMessageToReplace;
-            jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
-            return new MessageCorrectExtension(jidMessageToReplace);
-        }
+    public static MessageCorrectExtension from(Message message) {
+        return new MessageCorrectExtension(message.getStanzaId());
     }
 
 }
