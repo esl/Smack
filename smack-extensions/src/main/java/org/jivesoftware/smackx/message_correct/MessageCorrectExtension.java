@@ -82,10 +82,8 @@ public class MessageCorrectExtension implements ExtensionElement {
      */
     @Override
     public XmlStringBuilder toXML() {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(ELEMENT);
+        XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute(ID_TAG, getIdInitialMessage());
-        xml.xmlnsAttribute(NAMESPACE);
         xml.closeEmptyElement();
         return xml;
     }
