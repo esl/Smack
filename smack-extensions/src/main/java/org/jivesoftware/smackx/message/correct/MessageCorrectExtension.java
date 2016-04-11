@@ -16,14 +16,8 @@
  */
 package org.jivesoftware.smackx.message.correct;
 
-import java.io.IOException;
-
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * An Extension that implements XEP-0308: Last Message Correction
@@ -86,18 +80,11 @@ public class MessageCorrectExtension implements ExtensionElement {
     @Override
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this, getNamespace());
-        
         xml.attribute(JID_TAG, getJidInitialMessage());
         xml.attribute("xmlns", getNamespace());
         xml.append('/');
         xml.rightAngleBracket();
-        
         return xml;
-        
-//        final StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append('<').append(getElementName()).append(' ').append(JID_TAG).append('=').append('\'')
-//                .append(getJidInitialMessage()).append('\'').append(" xmlns='").append(getNamespace()).append("'/>");
-//        return stringBuilder.toString();
     }
 
     /*
@@ -108,23 +95,6 @@ public class MessageCorrectExtension implements ExtensionElement {
     @Override
     public String getNamespace() {
         return NAMESPACE;
-    }
-
-    /**
-     * A ExtensionElementProvider for the MessageCorrectExtension. 
-     * As MessageCorrection elements have only the JID of the message to replace.
-     * 
-     * @author Fernando Ramirez, f.e.ramirez94@gmail.com
-     */
-    public static class Provider extends ExtensionElementProvider<MessageCorrectExtension> {
-
-        @Override
-        public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth)
-                throws XmlPullParserException, IOException, SmackException {
-            String jidMessageToReplace;
-            jidMessageToReplace = parser.getAttributeValue("", JID_TAG);
-            return new MessageCorrectExtension(jidMessageToReplace);
-        }
     }
 
 }
