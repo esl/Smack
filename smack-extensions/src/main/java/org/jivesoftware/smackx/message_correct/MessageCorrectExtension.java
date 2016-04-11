@@ -46,7 +46,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     /**
      * The id tag of a 'message correct' extension.
      */
-    private static final String ID_TAG = "id";
+    public static final String ID_TAG = "id";
 
     /**
      * The jid of the message to correct.
@@ -82,11 +82,11 @@ public class MessageCorrectExtension implements ExtensionElement {
      */
     @Override
     public XmlStringBuilder toXML() {
-        XmlStringBuilder xml = new XmlStringBuilder(this, getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder();
+        xml.halfOpenElement(ELEMENT);
         xml.attribute(ID_TAG, getIdInitialMessage());
-        xml.attribute("xmlns", getNamespace());
-        xml.append('/');
-        xml.rightAngleBracket();
+        xml.xmlnsAttribute(NAMESPACE);
+        xml.closeEmptyElement();
         return xml;
     }
 
@@ -101,7 +101,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     }
 
     public static MessageCorrectExtension from(Message message) {
-        return new MessageCorrectExtension(message.getStanzaId());
+        return message.getExtension(ELEMENT, NAMESPACE);
     }
 
 }
