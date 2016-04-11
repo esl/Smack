@@ -49,7 +49,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     public static final String ID_TAG = "id";
 
     /**
-     * The jid of the message to correct.
+     * The id of the message to correct.
      */
     private String idInitialMessage;
 
