@@ -204,5 +204,5 @@ public final class MamManager extends Manager {
         form.addField(field);
         return form;
     }
-    
+
 }
