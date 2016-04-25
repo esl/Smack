@@ -18,6 +18,9 @@ package org.jivesoftware.smackx.mam;
 
 import static org.mockito.Mockito.mock;
 
+import java.lang.reflect.Method;
+import java.util.Date;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.mam.packet.MamPacket;
@@ -27,15 +30,20 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.util.XmppDateTime;
 
 public class QueryArchiveTest {
 
     private XMPPConnection connection;
-
+    private String queryId;
+    
     @Before
     public void setup() {
         // mock connection
         connection = mock(XMPPConnection.class);
+        
+        // test query id
+        queryId = "testid";
     }
 
     private DataForm getNewMamForm() {
@@ -50,13 +58,29 @@ public class QueryArchiveTest {
     private String getMamSimpleQueryIQ(String stanzaId) {
         return "<iq id='" + stanzaId + "' type='set'>"
                 + "<query xmlns='urn:xmpp:mam:1' queryid='testid'>"
-                + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
-                + "<value>urn:xmpp:mam:1</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
+                    + "<x xmlns='jabber:x:data' type='submit'>" 
+                        + "<field var='FORM_TYPE' type='hidden'>"
+                            + "<value>urn:xmpp:mam:1</value>" 
+                        + "</field>" 
+                    + "</x>" 
+                + "</query>" 
+              + "</iq>";
+    }
+    
+    private String getMamXMemberWithStartDate(String startDate) {
+        return  "<x xmlns='jabber:x:data' type='submit'>"
+                    + "<field var='FORM_TYPE' type='hidden'>"
+                        + "<value>urn:xmpp:mam:1</value>"
+                    + "</field>"
+                    + "<field var='start'>"
+                        + "<value>" + startDate + "</value>"
+                    + "</field>"
+                +"</x>";
     }
 
     @Test
     public void checkMamQueryIQ() throws Exception {
-        String queryId = "testid";
+        
         DataForm dataForm = getNewMamForm();
 
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
@@ -65,4 +89,18 @@ public class QueryArchiveTest {
         Assert.assertEquals(mamQueryIQ.toString(), getMamSimpleQueryIQ(mamQueryIQ.getStanzaId()));
     }
 
+    @Test
+    public void checkStartDateFilter() throws Exception {
+        MamManager mamManager = MamManager.getInstanceFor(connection);
+        Method method = MamManager.class.getDeclaredMethod("addStart", Date.class, DataForm.class);
+        method.setAccessible(true);
+        
+        Date date = new Date();
+        
+        DataForm dataForm = getNewMamForm();
+        method.invoke(mamManager, date, dataForm);
+        
+        Assert.assertEquals(dataForm.toXML().toString(), getMamXMemberWithStartDate(XmppDateTime.formatXEP0082Date(date)));
+    }
+    
 }
