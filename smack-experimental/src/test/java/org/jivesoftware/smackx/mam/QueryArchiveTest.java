@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class QueryArchiveTest extends MamTest{
+public class QueryArchiveTest extends MamTest {
 
     private String getMamSimpleQueryIQ(String stanzaId) {
         return "<iq id='" + stanzaId + "' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='testid'>"
@@ -37,7 +37,5 @@ public class QueryArchiveTest extends MamTest{
         mamQueryIQ.setType(IQ.Type.set);
         Assert.assertEquals(mamQueryIQ.toString(), getMamSimpleQueryIQ(mamQueryIQ.getStanzaId()));
     }
-
-
 
 }

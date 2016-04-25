@@ -82,31 +82,31 @@ public final class MamManager extends Manager {
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(MamPacket.NAMESPACE);
     }
 
-    public MamQueryResult queryArchive(Integer max) 
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException{
+    public MamQueryResult queryArchive(Integer max)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(max, null, null, null);
     }
-    
-    public MamQueryResult queryArchive(String withJid) 
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException{
+
+    public MamQueryResult queryArchive(String withJid)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, null, null, withJid);
     }
-    
-    public MamQueryResult queryArchive(Date start, Date end) 
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException{
+
+    public MamQueryResult queryArchive(Date start, Date end)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, start, end, null);
     }
-    
-    public MamQueryResult queryArchiveWithStartDate(Date start) 
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException{
+
+    public MamQueryResult queryArchiveWithStartDate(Date start)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, start, null, null);
     }
-    
-    public MamQueryResult queryArchiveWithEndDate(Date end) 
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException{
+
+    public MamQueryResult queryArchiveWithEndDate(Date end)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, null, end, null);
     }
-    
+
     public MamQueryResult queryArchive(Integer max, Date start, Date end, String withJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DataForm dataForm = null;

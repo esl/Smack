@@ -1,3 +1,19 @@
+/**
+ *
+ * Copyright 2016 Fernando Ramirez
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jivesoftware.smackx.mam;
 
 import java.lang.reflect.Method;
@@ -10,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.util.XmppDateTime;
 
-public class FiltersTest extends MamTest{
+public class FiltersTest extends MamTest {
 
     private String getMamXMemberWith(List<String> fieldsNames, List<String> fieldsValues) {
         String xml = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
@@ -24,7 +40,7 @@ public class FiltersTest extends MamTest{
         xml += "</x>";
         return xml;
     }
-    
+
     @Test
     public void checkStartDateFilter() throws Exception {
         Method methodAddStartDateFilter = MamManager.class.getDeclaredMethod("addStart", Date.class, DataForm.class);
@@ -38,7 +54,7 @@ public class FiltersTest extends MamTest{
         fields.add("start");
         List<String> values = new ArrayList<>();
         values.add(XmppDateTime.formatXEP0082Date(date));
-        
+
         Assert.assertEquals(dataForm.toXML().toString(), getMamXMemberWith(fields, values));
     }
 
@@ -72,7 +88,7 @@ public class FiltersTest extends MamTest{
         fields.add("with");
         List<String> values = new ArrayList<>();
         values.add(jid);
-        
+
         Assert.assertEquals(dataForm.toXML().toString(), getMamXMemberWith(fields, values));
     }
 
@@ -97,7 +113,7 @@ public class FiltersTest extends MamTest{
 
         List<String> fields = new ArrayList<>();
         List<String> values = new ArrayList<>();
-        
+
         fields.add("start");
         values.add(dateString);
         Assert.assertNotEquals(dataFormResult, getMamXMemberWith(fields, values));
@@ -108,7 +124,7 @@ public class FiltersTest extends MamTest{
 
         fields.clear();
         values.clear();
-        
+
         fields.add("start");
         values.add(dateString);
         fields.add("with");
@@ -117,7 +133,7 @@ public class FiltersTest extends MamTest{
 
         fields.clear();
         values.clear();
-        
+
         fields.add("end");
         values.add(dateString);
         fields.add("with");
@@ -125,10 +141,10 @@ public class FiltersTest extends MamTest{
         fields.add("start");
         values.add(dateString);
         Assert.assertNotEquals(dataFormResult, getMamXMemberWith(fields, values));
-        
+
         fields.clear();
         values.clear();
-        
+
         fields.add("start");
         values.add(dateString);
         fields.add("end");
@@ -137,5 +153,5 @@ public class FiltersTest extends MamTest{
         values.add(jid);
         Assert.assertEquals(dataFormResult, getMamXMemberWith(fields, values));
     }
-    
+
 }
