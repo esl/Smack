@@ -122,12 +122,16 @@ public final class MamManager extends Manager {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
 
+        addResultsLimit(max, mamQueryIQ);
+
+        return queryArchive(mamQueryIQ, 0);
+    }
+
+    private void addResultsLimit(Integer max, MamQueryIQ mamQueryIQ) {
         if (max != null) {
             RSMSet rsmSet = new RSMSet(max);
             mamQueryIQ.addExtension(rsmSet);
         }
-
-        return queryArchive(mamQueryIQ, 0);
     }
 
     private void addWithJid(String withJid, DataForm dataForm) {

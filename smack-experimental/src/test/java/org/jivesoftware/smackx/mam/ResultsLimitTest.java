@@ -16,26 +16,35 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import java.lang.reflect.Method;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.mam.packet.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class QueryArchiveTest extends MamTest {
+public class ResultsLimitTest extends MamTest {
 
-    private String getMamSimpleQueryIQ(String stanzaId) {
+    private String getResultsLimitStanza(String stanzaId, Integer limitNumber) {
         return "<iq id='" + stanzaId + "' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='" + queryId + "'>"
                 + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
-                + "<value>urn:xmpp:mam:1</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
+                + "<value>urn:xmpp:mam:1</value>" + "</field>" + "</x>" + "<set xmlns='http://jabber.org/protocol/rsm'>"
+                + "<max>" + String.valueOf(limitNumber) + "</max>" + "</set>" + "</query>" + "</iq>";
     }
 
     @Test
-    public void checkMamQueryIQ() throws Exception {
+    public void checkResultsLimit() throws Exception {
+        Method methodAddResultsLimit = MamManager.class.getDeclaredMethod("addResultsLimit", Integer.class,
+                MamQueryIQ.class);
+        methodAddResultsLimit.setAccessible(true);
+
         DataForm dataForm = getNewMamForm();
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
-        Assert.assertEquals(mamQueryIQ.toString(), getMamSimpleQueryIQ(mamQueryIQ.getStanzaId()));
+
+        methodAddResultsLimit.invoke(mamManager, 10, mamQueryIQ);
+        Assert.assertEquals(mamQueryIQ.toString(), getResultsLimitStanza(mamQueryIQ.getStanzaId(), 10));
     }
 
 }
