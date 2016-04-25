@@ -92,13 +92,13 @@ public class QueryArchiveTest {
     @Test
     public void checkStartDateFilter() throws Exception {
         MamManager mamManager = MamManager.getInstanceFor(connection);
-        Method method = MamManager.class.getDeclaredMethod("addStart", Date.class, DataForm.class);
-        method.setAccessible(true);
+        Method methodAddStartDateFilter = MamManager.class.getDeclaredMethod("addStart", Date.class, DataForm.class);
+        methodAddStartDateFilter.setAccessible(true);
         
         Date date = new Date();
         
         DataForm dataForm = getNewMamForm();
-        method.invoke(mamManager, date, dataForm);
+        methodAddStartDateFilter.invoke(mamManager, date, dataForm);
         
         Assert.assertEquals(dataForm.toXML().toString(), getMamXMemberWithStartDate(XmppDateTime.formatXEP0082Date(date)));
     }
