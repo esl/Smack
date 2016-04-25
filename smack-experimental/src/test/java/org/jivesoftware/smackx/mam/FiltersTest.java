@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.jivesoftware.smackx.mam.packet.MamPacket;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,8 +30,8 @@ import org.jxmpp.util.XmppDateTime;
 public class FiltersTest extends MamTest {
 
     private String getMamXMemberWith(List<String> fieldsNames, List<String> fieldsValues) {
-        String xml = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
-                + "<value>urn:xmpp:mam:1</value>" + "</field>";
+        String xml = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>" + "<value>"
+                + MamPacket.NAMESPACE + "</value>" + "</field>";
 
         for (int i = 0; i < fieldsNames.size() && i < fieldsValues.size(); i++) {
             xml += "<field var='" + fieldsNames.get(i) + "'>" + "<value>" + fieldsValues.get(i) + "</value>"

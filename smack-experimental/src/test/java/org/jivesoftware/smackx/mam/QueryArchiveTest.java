@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.mam;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.mam.packet.MamPacket;
 import org.jivesoftware.smackx.mam.packet.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
@@ -26,8 +27,8 @@ public class QueryArchiveTest extends MamTest {
 
     private String getMamSimpleQueryIQ(String stanzaId) {
         return "<iq id='" + stanzaId + "' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='" + queryId + "'>"
-                + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
-                + "<value>urn:xmpp:mam:1</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
+                + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>" + "<value>"
+                + MamPacket.NAMESPACE + "</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
     }
 
     @Test

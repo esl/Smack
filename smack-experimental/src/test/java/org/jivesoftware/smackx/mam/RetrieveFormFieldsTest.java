@@ -16,13 +16,27 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import java.lang.reflect.Method;
+
+import org.jivesoftware.smackx.mam.packet.MamPacket;
+import org.jivesoftware.smackx.mam.packet.MamQueryIQ;
 import org.junit.Test;
+
+import org.junit.Assert;
 
 public class RetrieveFormFieldsTest extends MamTest {
 
+    private String getRetrieveFormFieldStanza(String stanzaId, String queryId) {
+        return "<iq id='" + stanzaId + "' type='get'>" + "<query xmlns='" + MamPacket.NAMESPACE + "' queryid='"
+                + queryId + "'></query>" + "</iq>";
+    }
+
     @Test
     public void checkRetrieveFormFieldsStanza() throws Exception {
-        
+        Method methodPrepareMamQueryIQGet = MamManager.class.getDeclaredMethod("prepareMamQueryIQGet", String.class);
+        methodPrepareMamQueryIQGet.setAccessible(true);
+        MamQueryIQ mamQueryIQ = (MamQueryIQ) methodPrepareMamQueryIQGet.invoke(mamManager, queryId);
+        Assert.assertEquals(mamQueryIQ.toString(), getRetrieveFormFieldStanza(mamQueryIQ.getStanzaId(), queryId));
     }
 
 }

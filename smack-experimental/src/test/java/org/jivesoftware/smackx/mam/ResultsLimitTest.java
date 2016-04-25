@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.mam;
 import java.lang.reflect.Method;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.mam.packet.MamPacket;
 import org.jivesoftware.smackx.mam.packet.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
@@ -28,9 +29,10 @@ public class ResultsLimitTest extends MamTest {
 
     private String getResultsLimitStanza(String stanzaId, Integer limitNumber) {
         return "<iq id='" + stanzaId + "' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='" + queryId + "'>"
-                + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
-                + "<value>urn:xmpp:mam:1</value>" + "</field>" + "</x>" + "<set xmlns='http://jabber.org/protocol/rsm'>"
-                + "<max>" + String.valueOf(limitNumber) + "</max>" + "</set>" + "</query>" + "</iq>";
+                + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>" + "<value>"
+                + MamPacket.NAMESPACE + "</value>" + "</field>" + "</x>"
+                + "<set xmlns='http://jabber.org/protocol/rsm'>" + "<max>" + String.valueOf(limitNumber) + "</max>"
+                + "</set>" + "</query>" + "</iq>";
     }
 
     @Test
