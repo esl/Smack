@@ -162,15 +162,19 @@ public final class MamManager extends Manager {
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
         RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getLast(), RSMSet.PageDirection.after);
-        return page(mamQueryResult, requestRsmSet);
+        return page(mamQueryResult.form, requestRsmSet);
     }
 
-    public MamQueryResult page(MamQueryResult mamQueryResult, RSMSet rsmSet)
+    public MamQueryResult page(DataForm dataForm, RSMSet rsmSet)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), mamQueryResult.form);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), dataForm);
+        preparePageQuery(mamQueryIQ, rsmSet);
+        return queryArchive(mamQueryIQ, 0);
+    }
+
+    private void preparePageQuery(MamQueryIQ mamQueryIQ, RSMSet rsmSet) {
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.addExtension(rsmSet);
-        return queryArchive(mamQueryIQ, 0);
     }
 
     private MamQueryResult queryArchive(MamQueryIQ mamQueryIq, long extraTimeout)
