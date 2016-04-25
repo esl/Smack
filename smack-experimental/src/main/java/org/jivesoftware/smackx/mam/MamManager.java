@@ -119,8 +119,7 @@ public final class MamManager extends Manager {
             addWithJid(withJid, dataForm);
         }
 
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
-        mamQueryIQ.setType(IQ.Type.set);
+        MamQueryIQ mamQueryIQ = prepareMamQueryIQSet(dataForm, queryId);
 
         addResultsLimit(max, mamQueryIQ);
 
@@ -175,6 +174,25 @@ public final class MamManager extends Manager {
     private void preparePageQuery(MamQueryIQ mamQueryIQ, RSMSet rsmSet) {
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.addExtension(rsmSet);
+    }
+    
+    public MamQueryResult retrieveFormFields()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        String queryId = UUID.randomUUID().toString();
+        MamQueryIQ mamQueryIQ = prepareMamQueryIQGet(queryId);
+        return queryArchive(mamQueryIQ, 0);
+    }
+
+    private MamQueryIQ prepareMamQueryIQSet(DataForm dataForm, String queryId) {
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
+        mamQueryIQ.setType(IQ.Type.set);
+        return mamQueryIQ;
+    }
+    
+    private MamQueryIQ prepareMamQueryIQGet(String queryId) {
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, null);
+        mamQueryIQ.setType(IQ.Type.get);
+        return mamQueryIQ;
     }
 
     private MamQueryResult queryArchive(MamQueryIQ mamQueryIq, long extraTimeout)
@@ -240,7 +258,7 @@ public final class MamManager extends Manager {
         return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(MamPacket.NAMESPACE);
     }
 
-    private static DataForm getNewMamForm() {
+    private DataForm getNewMamForm() {
         FormField field = new FormField(FormField.FORM_TYPE);
         field.setType(FormField.Type.hidden);
         field.addValue(MamPacket.NAMESPACE);

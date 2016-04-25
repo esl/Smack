@@ -18,9 +18,10 @@ package org.jivesoftware.smackx.mam;
 
 import static org.mockito.Mockito.mock;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.mam.packet.MamPacket;
-import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Before;
 
@@ -42,13 +43,11 @@ public class MamTest {
         mamManager = MamManager.getInstanceFor(connection);
     }
 
-    protected DataForm getNewMamForm() {
-        FormField field = new FormField(FormField.FORM_TYPE);
-        field.setType(FormField.Type.hidden);
-        field.addValue(MamPacket.NAMESPACE);
-        DataForm form = new DataForm(DataForm.Type.submit);
-        form.addField(field);
-        return form;
+    protected DataForm getNewMamForm() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        Method methodGetNewMamForm = MamManager.class.getDeclaredMethod("getNewMamForm");
+        methodGetNewMamForm.setAccessible(true);
+        return (DataForm) methodGetNewMamForm.invoke(mamManager);
     }
 
 }
