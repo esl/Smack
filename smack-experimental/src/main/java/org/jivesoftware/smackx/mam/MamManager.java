@@ -89,22 +89,9 @@ public final class MamManager extends Manager {
 
         if (start != null || end != null || withJid != null) {
             dataForm = getNewMamForm();
-
-            if (start != null) {
-                FormField formField = new FormField("start");
-                formField.addValue(XmppDateTime.formatXEP0082Date(start));
-                dataForm.addField(formField);
-            }
-            if (end != null) {
-                FormField formField = new FormField("end");
-                formField.addValue(XmppDateTime.formatXEP0082Date(end));
-                dataForm.addField(formField);
-            }
-            if (withJid != null) {
-                FormField formField = new FormField("with");
-                formField.addValue(withJid);
-                dataForm.addField(formField);
-            }
+            addStart(start, dataForm);
+            addEnd(end, dataForm);
+            addWithJid(withJid, dataForm);
         }
 
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
@@ -116,6 +103,30 @@ public final class MamManager extends Manager {
         }
 
         return queryArchive(mamQueryIQ, 0);
+    }
+
+    private void addWithJid(String withJid, DataForm dataForm) {
+        if (withJid != null) {
+            FormField formField = new FormField("with");
+            formField.addValue(withJid);
+            dataForm.addField(formField);
+        }
+    }
+
+    private void addEnd(Date end, DataForm dataForm) {
+        if (end != null) {
+            FormField formField = new FormField("end");
+            formField.addValue(XmppDateTime.formatXEP0082Date(end));
+            dataForm.addField(formField);
+        }
+    }
+
+    private void addStart(Date start, DataForm dataForm) {
+        if (start != null) {
+            FormField formField = new FormField("start");
+            formField.addValue(XmppDateTime.formatXEP0082Date(start));
+            dataForm.addField(formField);
+        }
     }
 
     public MamQueryResult pageNext(MamQueryResult mamQueryResult, int count)
