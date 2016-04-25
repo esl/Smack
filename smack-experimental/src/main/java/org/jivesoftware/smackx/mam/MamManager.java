@@ -175,7 +175,7 @@ public final class MamManager extends Manager {
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.addExtension(rsmSet);
     }
-    
+
     public MamQueryResult retrieveFormFields()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         String queryId = UUID.randomUUID().toString();
@@ -188,7 +188,7 @@ public final class MamManager extends Manager {
         mamQueryIQ.setType(IQ.Type.set);
         return mamQueryIQ;
     }
-    
+
     private MamQueryIQ prepareMamQueryIQGet(String queryId) {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, null);
         mamQueryIQ.setType(IQ.Type.get);
