@@ -37,18 +37,13 @@ public class RetrieveFormFieldsTest extends MamTest {
     }
 
     private String getAdditionalFieldsStanza() {
-        return "<x xmlns='jabber:x:data' type='submit'>"
-                + "<field var='FORM_TYPE' type='hidden'>"
-                + "<value>" + MamPacket.NAMESPACE + "</value></field>"
-                + "<field var='urn:example:xmpp:free-text-search' type='text-single'>"
-                + "<value>Hi</value>"
-                + "</field>"
-                + "<field var='urn:example:xmpp:stanza-content' type='jid-single'>"
-                + "<value>Hi2</value>"
-                + "</field>"
-                + "</x>";
+        return "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>" + "<value>"
+                + MamPacket.NAMESPACE + "</value>" + "</field>"
+                + "<field var='urn:example:xmpp:free-text-search' type='text-single'>" + "<value>Hi</value>"
+                + "</field>" + "<field var='urn:example:xmpp:stanza-content' type='jid-single'>" + "<value>Hi2</value>"
+                + "</field>" + "</x>";
     }
-    
+
     @Test
     public void checkRetrieveFormFieldsStanza() throws Exception {
         Method methodPrepareMamQueryIQGet = MamManager.class.getDeclaredMethod("prepareMamQueryIQGet", String.class);
@@ -64,19 +59,21 @@ public class RetrieveFormFieldsTest extends MamTest {
         methodAddAdditionalFields.setAccessible(true);
 
         DataForm dataForm = getNewMamForm();
-        
+
         List<AdditionalField> additionalFields = new ArrayList<>();
-        
-        AdditionalField field1 = new MamManager.AdditionalField(FormField.Type.text_single, "urn:example:xmpp:free-text-search", "Hi");
-        AdditionalField field2 = new MamManager.AdditionalField(FormField.Type.jid_single, "urn:example:xmpp:stanza-content", "Hi2");
-      
+
+        AdditionalField field1 = new MamManager.AdditionalField(FormField.Type.text_single,
+                "urn:example:xmpp:free-text-search", "Hi");
+        AdditionalField field2 = new MamManager.AdditionalField(FormField.Type.jid_single,
+                "urn:example:xmpp:stanza-content", "Hi2");
+
         additionalFields.add(field1);
         additionalFields.add(field2);
-        
+
         methodAddAdditionalFields.invoke(mamManager, additionalFields, dataForm);
-        
+
         String dataFormResult = dataForm.toXML().toString();
-        
+
         Assert.assertEquals(dataFormResult, getAdditionalFieldsStanza());
     }
 

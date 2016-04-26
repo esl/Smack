@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus
+ * Copyright © 2016 Florian Schmaus and Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.mam.packet;
 
+import java.util.List;
+
+import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
@@ -35,10 +38,13 @@ public class MamPacket {
     public static final String NAMESPACE = "urn:xmpp:mam:1";
 
     public static abstract class AbstractMamExtension implements ExtensionElement {
-        public final String queryId;
+        public String queryId;
 
         protected AbstractMamExtension(String queryId) {
             this.queryId = queryId;
+        }
+
+        protected AbstractMamExtension() {
         }
 
         public final String getQueryId() {
@@ -151,4 +157,96 @@ public class MamPacket {
         }
 
     }
+
+    public static class MamPrefsExtension extends AbstractMamExtension {
+
+        public static final String ELEMENT = "prefs";
+
+        private final String defaultField;
+        private final List<String> alwaysJids;
+        private final List<String> neverJids;
+
+        public MamPrefsExtension(String defaultField, List<String> alwaysJids, List<String> neverJids) {
+            super();
+            this.defaultField = defaultField;
+            this.alwaysJids = alwaysJids;
+            this.neverJids = neverJids;
+        }
+
+        public String getDefault() {
+            return defaultField;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public CharSequence toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder();
+            xml.halfOpenElement(this);
+            xml.optAttribute("default", defaultField);
+            xml.rightAngleBracket();
+
+            AlwaysElement alwaysElement = new AlwaysElement(alwaysJids);
+            xml.element(alwaysElement);
+
+            NeverElement neverElement = new NeverElement(neverJids);
+            xml.element(neverElement);
+
+            xml.closeElement(this);
+            return xml;
+        }
+
+        public static MamPrefsExtension from(Message message) {
+            return message.getExtension(ELEMENT, NAMESPACE);
+        }
+
+        public static class AlwaysElement implements Element {
+
+            private List<String> alwaysJids;
+
+            private AlwaysElement(List<String> alwaysJids) {
+                this.alwaysJids = alwaysJids;
+            }
+
+            @Override
+            public CharSequence toXML() {
+                XmlStringBuilder xml = new XmlStringBuilder();
+                xml.halfOpenElement("always");
+
+                for (String jid : alwaysJids) {
+                    xml.element("jid", jid);
+                }
+
+                xml.closeElement("always");
+                return xml;
+            }
+        }
+
+        public static class NeverElement implements Element {
+
+            private List<String> neverJids;
+
+            private NeverElement(List<String> neverJids) {
+                this.neverJids = neverJids;
+            }
+
+            @Override
+            public CharSequence toXML() {
+                XmlStringBuilder xml = new XmlStringBuilder();
+                xml.halfOpenElement("never");
+
+                for (String jid : neverJids) {
+                    xml.element("jid", jid);
+                }
+
+                xml.closeElement("never");
+                return xml;
+            }
+        }
+
+    }
+
 }

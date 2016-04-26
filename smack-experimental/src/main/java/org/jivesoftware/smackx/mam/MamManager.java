@@ -37,10 +37,13 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.filter.MamMessageFinFilter;
 import org.jivesoftware.smackx.mam.filter.MamMessageResultFilter;
+import org.jivesoftware.smackx.mam.filter.MamPrefsResultFilter;
 import org.jivesoftware.smackx.mam.packet.MamPacket;
 import org.jivesoftware.smackx.mam.packet.MamPacket.MamFinExtension;
+import org.jivesoftware.smackx.mam.packet.MamPacket.MamPrefsExtension;
 import org.jivesoftware.smackx.mam.packet.MamQueryIQ;
 import org.jivesoftware.smackx.mam.packet.MamPacket.MamResultExtension;
+import org.jivesoftware.smackx.mam.packet.MamPrefIQ;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -295,6 +298,57 @@ public final class MamManager extends Manager {
             this.variable = variable;
             this.value = value;
         }
+    }
+
+    public MamPrefsResult retrieveArchivingPreferences()
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        MamPrefIQ mamPrefIQ = prepareRetrievePreferencesStanza();
+        return queryMamPrefs(mamPrefIQ, 0);
+    }
+
+    private MamPrefIQ prepareRetrievePreferencesStanza() {
+        MamPrefIQ mamPrefIQ = new MamPrefIQ();
+        mamPrefIQ.setType(IQ.Type.get);
+        return mamPrefIQ;
+    }
+
+    public final static class MamPrefsResult {
+        public final MamPrefsExtension mamPrefs;
+        public final DataForm form;
+
+        private MamPrefsResult(MamPrefsExtension mamPrefs, DataForm form) {
+            this.mamPrefs = mamPrefs;
+            this.form = form;
+        }
+    }
+
+    private MamPrefsResult queryMamPrefs(MamPrefIQ mamPrefIQ, long extraTimeout)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        if (extraTimeout < 0) {
+            throw new IllegalArgumentException("extra timeout must be zero or positive");
+        }
+
+        final XMPPConnection connection = connection();
+        MamPrefsExtension mamPrefsExtension = null;
+
+        PacketCollector prefsMessageCollector = connection.createPacketCollector(new MamPrefsResultFilter(mamPrefIQ));
+
+        PacketCollector.Configuration resultCollectorConfiguration = PacketCollector.newConfiguration()
+                .setStanzaFilter(new MamPrefsResultFilter(mamPrefIQ)).setCollectorToReset(prefsMessageCollector);
+
+        PacketCollector resultCollector = connection.createPacketCollector(resultCollectorConfiguration);
+
+        try {
+            connection.createPacketCollectorAndSend(mamPrefIQ).nextResultOrThrow();
+            Message mamPrefsMessage = prefsMessageCollector
+                    .nextResultOrThrow(connection.getPacketReplyTimeout() + extraTimeout);
+            mamPrefsExtension = MamPrefsExtension.from(mamPrefsMessage);
+        } finally {
+            resultCollector.cancel();
+            prefsMessageCollector.cancel();
+        }
+
+        return new MamPrefsResult(mamPrefsExtension, DataForm.from(mamPrefIQ));
     }
 
 }

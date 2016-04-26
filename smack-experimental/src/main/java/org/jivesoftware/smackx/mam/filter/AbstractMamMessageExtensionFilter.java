@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus
+ * Copyright © 2016 Florian Schmaus and Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,15 @@ import org.jivesoftware.smackx.mam.packet.MamQueryIQ;
 
 public abstract class AbstractMamMessageExtensionFilter extends FlexibleStanzaTypeFilter<Message> {
 
-    private final String queryId;
+    private String queryId;
 
     public AbstractMamMessageExtensionFilter(MamQueryIQ mamQueryIQ) {
         super(Message.class);
         this.queryId = mamQueryIQ.getQueryId();
+    }
+
+    public AbstractMamMessageExtensionFilter() {
+        super(Message.class);
     }
 
     @Override
