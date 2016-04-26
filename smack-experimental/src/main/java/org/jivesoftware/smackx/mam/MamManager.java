@@ -84,39 +84,46 @@ public final class MamManager extends Manager {
 
     public MamQueryResult queryArchive(Integer max)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return queryArchive(max, null, null, null);
+        return queryArchive(max, null, null, null, null);
     }
 
     public MamQueryResult queryArchive(String withJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return queryArchive(null, null, null, withJid);
+        return queryArchive(null, null, null, withJid, null);
     }
 
     public MamQueryResult queryArchive(Date start, Date end)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return queryArchive(null, start, end, null);
+        return queryArchive(null, start, end, null, null);
+    }
+
+    public MamQueryResult queryArchive(List<AdditionalField> additionalFields)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return queryArchive(null, null, null, null, additionalFields);
     }
 
     public MamQueryResult queryArchiveWithStartDate(Date start)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return queryArchive(null, start, null, null);
+        return queryArchive(null, start, null, null, null);
     }
 
     public MamQueryResult queryArchiveWithEndDate(Date end)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return queryArchive(null, null, end, null);
+        return queryArchive(null, null, end, null, null);
     }
 
-    public MamQueryResult queryArchive(Integer max, Date start, Date end, String withJid)
+    public MamQueryResult queryArchive(Integer max, Date start, Date end, String withJid,
+            List<AdditionalField> additionalFields)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DataForm dataForm = null;
         String queryId = UUID.randomUUID().toString();
 
-        if (start != null || end != null || withJid != null) {
+        if (start != null || end != null || withJid != null || additionalFields != null) {
             dataForm = getNewMamForm();
             addStart(start, dataForm);
             addEnd(end, dataForm);
             addWithJid(withJid, dataForm);
+            addAdditionalFields(additionalFields, dataForm);
         }
 
         MamQueryIQ mamQueryIQ = prepareMamQueryIQSet(dataForm, queryId);
@@ -124,6 +131,17 @@ public final class MamManager extends Manager {
         addResultsLimit(max, mamQueryIQ);
 
         return queryArchive(mamQueryIQ, 0);
+    }
+
+    private void addAdditionalFields(List<AdditionalField> additionalFields, DataForm dataForm) {
+        if (additionalFields != null) {
+            for (AdditionalField additionalField : additionalFields) {
+                FormField formField = new FormField(additionalField.variable);
+                formField.setType(additionalField.type);
+                formField.addValue(additionalField.value);
+                dataForm.addField(formField);
+            }
+        }
     }
 
     private void addResultsLimit(Integer max, MamQueryIQ mamQueryIQ) {
@@ -265,6 +283,18 @@ public final class MamManager extends Manager {
         DataForm form = new DataForm(DataForm.Type.submit);
         form.addField(field);
         return form;
+    }
+
+    public final static class AdditionalField {
+        public final FormField.Type type;
+        public final String variable;
+        public final String value;
+
+        private AdditionalField(FormField.Type type, String variable, String value) {
+            this.type = type;
+            this.variable = variable;
+            this.value = value;
+        }
     }
 
 }
