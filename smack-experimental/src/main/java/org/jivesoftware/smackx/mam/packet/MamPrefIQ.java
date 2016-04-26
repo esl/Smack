@@ -47,8 +47,11 @@ public class MamPrefIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-
+        
         if (updatePrefs) {
+            xml.attribute("default", "roster");
+            xml.rightAngleBracket();
+            
             if (alwaysJids != null) {
                 AlwaysElement alwaysElement = new AlwaysElement(alwaysJids);
                 xml.element(alwaysElement);
@@ -58,8 +61,10 @@ public class MamPrefIQ extends IQ {
                 NeverElement neverElement = new NeverElement(neverJids);
                 xml.element(neverElement);
             }
+        } else {
+            xml.rightAngleBracket();
         }
 
-        return null;
+        return xml;
     }
 }

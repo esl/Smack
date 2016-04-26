@@ -214,12 +214,12 @@ public class MamPacket {
             @Override
             public CharSequence toXML() {
                 XmlStringBuilder xml = new XmlStringBuilder();
-                xml.halfOpenElement("always");
+                xml.openElement("always");
 
                 for (String jid : alwaysJids) {
                     xml.element("jid", jid);
                 }
-
+                
                 xml.closeElement("always");
                 return xml;
             }
@@ -236,7 +236,7 @@ public class MamPacket {
             @Override
             public CharSequence toXML() {
                 XmlStringBuilder xml = new XmlStringBuilder();
-                xml.halfOpenElement("never");
+                xml.openElement("never");
 
                 for (String jid : neverJids) {
                     xml.element("jid", jid);
