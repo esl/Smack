@@ -219,7 +219,7 @@ public class MamPacket {
                 for (String jid : alwaysJids) {
                     xml.element("jid", jid);
                 }
-                
+
                 xml.closeElement("always");
                 return xml;
             }

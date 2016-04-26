@@ -305,7 +305,7 @@ public final class MamManager extends Manager {
         MamPrefIQ mamPrefIQ = prepareRetrievePreferencesStanza();
         return queryMamPrefs(mamPrefIQ, 0);
     }
-    
+
     private MamPrefIQ prepareRetrievePreferencesStanza() {
         MamPrefIQ mamPrefIQ = new MamPrefIQ(false, null, null);
         mamPrefIQ.setType(IQ.Type.get);
@@ -317,13 +317,13 @@ public final class MamManager extends Manager {
         MamPrefIQ mamPrefIQ = prepareUpdatePreferencesStanza(alwaysJids, neverJids);
         return queryMamPrefs(mamPrefIQ, 0);
     }
-    
+
     private MamPrefIQ prepareUpdatePreferencesStanza(List<String> alwaysJids, List<String> neverJids) {
         MamPrefIQ mamPrefIQ = new MamPrefIQ(true, alwaysJids, neverJids);
         mamPrefIQ.setType(IQ.Type.set);
         return mamPrefIQ;
     }
-    
+
     public final static class MamPrefsResult {
         public final MamPrefsExtension mamPrefs;
         public final DataForm form;
