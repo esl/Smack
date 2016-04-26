@@ -290,7 +290,7 @@ public final class MamManager extends Manager {
         public final String variable;
         public final String value;
 
-        private AdditionalField(FormField.Type type, String variable, String value) {
+        public AdditionalField(FormField.Type type, String variable, String value) {
             this.type = type;
             this.variable = variable;
             this.value = value;
