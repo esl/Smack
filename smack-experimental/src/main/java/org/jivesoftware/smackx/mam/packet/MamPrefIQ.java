@@ -16,7 +16,11 @@
  */
 package org.jivesoftware.smackx.mam.packet;
 
+import java.util.List;
+
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.mam.packet.MamPacket.MamPrefsExtension.AlwaysElement;
+import org.jivesoftware.smackx.mam.packet.MamPacket.MamPrefsExtension.NeverElement;
 
 /**
  * MAM Preferences IQ class.
@@ -30,13 +34,32 @@ public class MamPrefIQ extends IQ {
     public static final String ELEMENT = "prefs";
     public static final String NAMESPACE = MamPacket.NAMESPACE;
 
-    public MamPrefIQ() {
+    private boolean updatePrefs;
+    private List<String> alwaysJids;
+    private List<String> neverJids;
+
+    public MamPrefIQ(boolean updatePrefs, List<String> alwaysJids, List<String> neverJids) {
         super(ELEMENT, NAMESPACE);
+        this.updatePrefs = updatePrefs;
+        this.alwaysJids = alwaysJids;
+        this.neverJids = neverJids;
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        // TODO Auto-generated method stub
+
+        if (updatePrefs) {
+            if (alwaysJids != null) {
+                AlwaysElement alwaysElement = new AlwaysElement(alwaysJids);
+                xml.element(alwaysElement);
+            }
+
+            if (neverJids != null) {
+                NeverElement neverElement = new NeverElement(neverJids);
+                xml.element(neverElement);
+            }
+        }
+
         return null;
     }
 }

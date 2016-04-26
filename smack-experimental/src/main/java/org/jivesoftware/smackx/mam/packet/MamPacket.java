@@ -207,7 +207,7 @@ public class MamPacket {
 
             private List<String> alwaysJids;
 
-            private AlwaysElement(List<String> alwaysJids) {
+            AlwaysElement(List<String> alwaysJids) {
                 this.alwaysJids = alwaysJids;
             }
 
@@ -229,7 +229,7 @@ public class MamPacket {
 
             private List<String> neverJids;
 
-            private NeverElement(List<String> neverJids) {
+            public NeverElement(List<String> neverJids) {
                 this.neverJids = neverJids;
             }
 
