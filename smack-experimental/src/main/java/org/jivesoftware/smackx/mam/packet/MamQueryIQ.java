@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus
+ * Copyright © 2016 Florian Schmaus and Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,14 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  */
 public class MamQueryIQ extends IQ {
 
+    /**
+     * the MAM query IQ element
+     */
     public static final String ELEMENT = QUERY_ELEMENT;
+
+    /**
+     * the MAM query IQ NAMESPACE
+     */
     public static final String NAMESPACE = MamPacket.NAMESPACE;
 
     private final String queryId;
@@ -53,18 +60,39 @@ public class MamQueryIQ extends IQ {
         }
     }
 
+    /**
+     * MAM query IQ constructor.
+     * 
+     * @param form
+     */
     public MamQueryIQ(DataForm form) {
         this(null, null, form);
     }
 
+    /**
+     * MAM query IQ constructor.
+     * 
+     * @param queryId
+     */
     public MamQueryIQ(String queryId) {
         this(queryId, null, null);
     }
 
+    /**
+     * MAM query IQ constructor.
+     * 
+     * @param queryId
+     * @param form
+     */
     public MamQueryIQ(String queryId, DataForm form) {
         this(queryId, null, form);
     }
 
+    /**
+     * Get query id.
+     * 
+     * @return the query id
+     */
     public String getQueryId() {
         return queryId;
     }

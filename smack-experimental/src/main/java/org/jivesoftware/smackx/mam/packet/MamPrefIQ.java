@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus and Fernando Ramirez
+ * Copyright © 2016 Florian Schmaus and Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,25 +31,22 @@ import org.jivesoftware.smackx.mam.packet.MamPacket.MamPrefsExtension.NeverEleme
  */
 public class MamPrefIQ extends IQ {
 
+    /**
+     * the preferences element
+     */
     public static final String ELEMENT = "prefs";
-    public static final String NAMESPACE = MamPacket.NAMESPACE;
 
     /**
-     * 
+     * the IQ NAMESPACE
      */
+    public static final String NAMESPACE = MamPacket.NAMESPACE;
+
     private boolean updatePrefs;
-    
-    /**
-     * 
-     */
     private List<String> alwaysJids;
-    
-    /**
-     * 
-     */
     private List<String> neverJids;
 
     /**
+     * MAM preferences IQ constructor
      * 
      * @param updatePrefs
      * @param alwaysJids
