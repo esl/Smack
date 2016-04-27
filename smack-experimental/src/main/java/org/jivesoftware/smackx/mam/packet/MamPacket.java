@@ -38,8 +38,7 @@ public class MamPacket {
     public static final String NAMESPACE = "urn:xmpp:mam:1";
 
     /**
-     * 
-     * @author inaka
+     * Abstract MAM extension class.
      *
      */
     public static abstract class AbstractMamExtension implements ExtensionElement {
@@ -53,16 +52,14 @@ public class MamPacket {
         }
 
         /**
+         * Get query id.
          * 
-         * @return
+         * @return the query id
          */
         public final String getQueryId() {
             return queryId;
         }
 
-        /**
-         * 
-         */
         public final String getNamespace() {
             return NAMESPACE;
         }
@@ -70,19 +67,33 @@ public class MamPacket {
     }
 
     /**
-     * 
-     * @author inaka
+     * MAM fin extension class.
      *
      */
     public static class MamFinExtension extends AbstractMamExtension {
 
+        /**
+         * fin element
+         */
         public static final String ELEMENT = "fin";
 
+        /**
+         * RSM set
+         */
         private final RSMSet rsmSet;
+
+        /**
+         * if is complete
+         */
         private final boolean complete;
+
+        /**
+         * if is stable
+         */
         private final boolean stable;
 
         /**
+         * MAM fin extension constructor.
          * 
          * @param queryId
          * @param rsmSet
@@ -100,24 +111,27 @@ public class MamPacket {
         }
 
         /**
+         * Get RSM set.
          * 
-         * @return
+         * @return the RSM set
          */
         public RSMSet getRSMSet() {
             return rsmSet;
         }
 
         /**
+         * Return if it is complete.
          * 
-         * @return
+         * @return true if it is complete
          */
         public boolean isComplete() {
             return complete;
         }
 
         /**
+         * Return if it is stable.
          * 
-         * @return
+         * @return true if it is stable
          */
         public boolean isStable() {
             return stable;
@@ -151,17 +165,33 @@ public class MamPacket {
     }
 
     /**
-     * 
-     * @author inaka
+     * MAM result extension class.
      *
      */
     public static class MamResultExtension extends AbstractMamExtension {
 
+        /**
+         * result element
+         */
         public static final String ELEMENT = "result";
 
+        /**
+         * id of the result
+         */
         private final String id;
+
+        /**
+         * the forwarded element
+         */
         private final Forwarded forwarded;
 
+        /**
+         * MAM result extension constructor.
+         * 
+         * @param queryId
+         * @param id
+         * @param forwarded
+         */
         public MamResultExtension(String queryId, String id, Forwarded forwarded) {
             super(queryId);
             if (StringUtils.isNotEmpty(id)) {
@@ -174,10 +204,20 @@ public class MamPacket {
             this.forwarded = forwarded;
         }
 
+        /**
+         * Get the id.
+         * 
+         * @return the id
+         */
         public String getId() {
             return id;
         }
 
+        /**
+         * Get the forwarded element.
+         * 
+         * @return the forwarded element
+         */
         public Forwarded getForwarded() {
             return forwarded;
         }
@@ -200,33 +240,33 @@ public class MamPacket {
     }
 
     /**
-     * 
-     * @author inaka
+     * MAM preferences extension class.
      *
      */
     public static class MamPrefsExtension extends AbstractMamExtension {
 
         /**
-         * 
+         * preferences element
          */
         public static final String ELEMENT = "prefs";
 
         /**
-         * 
+         * the 'default' attribute
          */
         private final String defaultField;
-        
+
         /**
-         * 
+         * the list of JIDs inside 'always' element
          */
         private final List<String> alwaysJids;
-        
+
         /**
-         * 
+         * the list of JIDs inside 'never' element
          */
         private final List<String> neverJids;
 
         /**
+         * MAM preferences extension class.
          * 
          * @param defaultField
          * @param alwaysJids
@@ -240,8 +280,9 @@ public class MamPacket {
         }
 
         /**
+         * Get the 'default' attribute value.
          * 
-         * @return
+         * @return the 'default' attribute value
          */
         public String getDefault() {
             return defaultField;
@@ -274,18 +315,18 @@ public class MamPacket {
         }
 
         /**
-         * 
-         * @author inaka
+         * Always element class
          *
          */
         public static class AlwaysElement implements Element {
 
             /**
-             * 
+             * list of JIDs
              */
             private List<String> alwaysJids;
 
             /**
+             * Always element constructor.
              * 
              * @param alwaysJids
              */
@@ -308,18 +349,18 @@ public class MamPacket {
         }
 
         /**
-         * 
-         * @author inaka
+         * Never element class.
          *
          */
         public static class NeverElement implements Element {
 
             /**
-             * 
+             * list of JIDs
              */
             private List<String> neverJids;
 
             /**
+             * Never element constructor.
              * 
              * @param neverJids
              */
