@@ -34,10 +34,27 @@ public class MamPrefIQ extends IQ {
     public static final String ELEMENT = "prefs";
     public static final String NAMESPACE = MamPacket.NAMESPACE;
 
+    /**
+     * 
+     */
     private boolean updatePrefs;
+    
+    /**
+     * 
+     */
     private List<String> alwaysJids;
+    
+    /**
+     * 
+     */
     private List<String> neverJids;
 
+    /**
+     * 
+     * @param updatePrefs
+     * @param alwaysJids
+     * @param neverJids
+     */
     public MamPrefIQ(boolean updatePrefs, List<String> alwaysJids, List<String> neverJids) {
         super(ELEMENT, NAMESPACE);
         this.updatePrefs = updatePrefs;

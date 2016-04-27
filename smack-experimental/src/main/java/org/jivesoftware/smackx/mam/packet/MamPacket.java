@@ -37,6 +37,11 @@ public class MamPacket {
 
     public static final String NAMESPACE = "urn:xmpp:mam:1";
 
+    /**
+     * 
+     * @author inaka
+     *
+     */
     public static abstract class AbstractMamExtension implements ExtensionElement {
         public String queryId;
 
@@ -47,16 +52,28 @@ public class MamPacket {
         protected AbstractMamExtension() {
         }
 
+        /**
+         * 
+         * @return
+         */
         public final String getQueryId() {
             return queryId;
         }
 
+        /**
+         * 
+         */
         public final String getNamespace() {
             return NAMESPACE;
         }
 
     }
 
+    /**
+     * 
+     * @author inaka
+     *
+     */
     public static class MamFinExtension extends AbstractMamExtension {
 
         public static final String ELEMENT = "fin";
@@ -65,6 +82,13 @@ public class MamPacket {
         private final boolean complete;
         private final boolean stable;
 
+        /**
+         * 
+         * @param queryId
+         * @param rsmSet
+         * @param complete
+         * @param stable
+         */
         public MamFinExtension(String queryId, RSMSet rsmSet, boolean complete, boolean stable) {
             super(queryId);
             if (rsmSet == null) {
@@ -75,14 +99,26 @@ public class MamPacket {
             this.stable = stable;
         }
 
+        /**
+         * 
+         * @return
+         */
         public RSMSet getRSMSet() {
             return rsmSet;
         }
 
+        /**
+         * 
+         * @return
+         */
         public boolean isComplete() {
             return complete;
         }
 
+        /**
+         * 
+         * @return
+         */
         public boolean isStable() {
             return stable;
         }
@@ -114,6 +150,11 @@ public class MamPacket {
         }
     }
 
+    /**
+     * 
+     * @author inaka
+     *
+     */
     public static class MamResultExtension extends AbstractMamExtension {
 
         public static final String ELEMENT = "result";
@@ -158,14 +199,39 @@ public class MamPacket {
 
     }
 
+    /**
+     * 
+     * @author inaka
+     *
+     */
     public static class MamPrefsExtension extends AbstractMamExtension {
 
+        /**
+         * 
+         */
         public static final String ELEMENT = "prefs";
 
+        /**
+         * 
+         */
         private final String defaultField;
+        
+        /**
+         * 
+         */
         private final List<String> alwaysJids;
+        
+        /**
+         * 
+         */
         private final List<String> neverJids;
 
+        /**
+         * 
+         * @param defaultField
+         * @param alwaysJids
+         * @param neverJids
+         */
         public MamPrefsExtension(String defaultField, List<String> alwaysJids, List<String> neverJids) {
             super();
             this.defaultField = defaultField;
@@ -173,6 +239,10 @@ public class MamPacket {
             this.neverJids = neverJids;
         }
 
+        /**
+         * 
+         * @return
+         */
         public String getDefault() {
             return defaultField;
         }
@@ -203,10 +273,22 @@ public class MamPacket {
             return message.getExtension(ELEMENT, NAMESPACE);
         }
 
+        /**
+         * 
+         * @author inaka
+         *
+         */
         public static class AlwaysElement implements Element {
 
+            /**
+             * 
+             */
             private List<String> alwaysJids;
 
+            /**
+             * 
+             * @param alwaysJids
+             */
             AlwaysElement(List<String> alwaysJids) {
                 this.alwaysJids = alwaysJids;
             }
@@ -225,10 +307,22 @@ public class MamPacket {
             }
         }
 
+        /**
+         * 
+         * @author inaka
+         *
+         */
         public static class NeverElement implements Element {
 
+            /**
+             * 
+             */
             private List<String> neverJids;
 
+            /**
+             * 
+             * @param neverJids
+             */
             public NeverElement(List<String> neverJids) {
                 this.neverJids = neverJids;
             }

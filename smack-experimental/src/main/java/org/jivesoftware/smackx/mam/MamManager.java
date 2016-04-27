@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus and Fernando Ramirez
+ * Copyright © 2016 Florian Schmaus and Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,12 @@ public final class MamManager extends Manager {
 
     private static final Map<XMPPConnection, MamManager> INSTANCES = new WeakHashMap<>();
 
+    /**
+     * Get the singleton instance of MamManager.
+     * 
+     * @param connection
+     * @return the instance of MamManager
+     */
     public static synchronized MamManager getInstanceFor(XMPPConnection connection) {
         MamManager mamManager = INSTANCES.get(connection);
 
@@ -85,36 +91,117 @@ public final class MamManager extends Manager {
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(MamPacket.NAMESPACE);
     }
 
+    /**
+     * Query archive with a maximum amount of results.
+     * 
+     * @param max
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult queryArchive(Integer max)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(max, null, null, null, null);
     }
 
+    /**
+     * Query archive with a JID (only messages from/to the JID).
+     * 
+     * @param withJid
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult queryArchive(String withJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, null, null, withJid, null);
     }
 
+    /**
+     * Query archive filtering by start and/or end date. If start == null, the
+     * value of 'start' will be equal to the date/time of the earliest message
+     * stored in the archive. If end == null, the value of 'end' will be equal
+     * to the date/time of the most recent message stored in the archive.
+     * 
+     * @param start
+     * @param end
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult queryArchive(Date start, Date end)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, start, end, null, null);
     }
 
+    /**
+     * Query Archive adding filters with additional fields.
+     * 
+     * @param additionalFields
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult queryArchive(List<AdditionalField> additionalFields)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, null, null, null, additionalFields);
     }
 
+    /**
+     * Query archive filtering by start date. The value of 'end' will be equal
+     * to the date/time of the most recent message stored in the archive.
+     * 
+     * @param start
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult queryArchiveWithStartDate(Date start)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, start, null, null, null);
     }
 
+    /**
+     * Query archive filtering by end date. The value of 'start' will be equal
+     * to the date/time of the earliest message stored in the archive.
+     * 
+     * @param end
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult queryArchiveWithEndDate(Date end)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return queryArchive(null, null, end, null, null);
     }
 
+    /**
+     * Query archive applying filters: max count, start date, end date, from/to
+     * JID and with additional fields.
+     * 
+     * @param max
+     * @param start
+     * @param end
+     * @param withJid
+     * @param additionalFields
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult queryArchive(Integer max, Date start, Date end, String withJid,
             List<AdditionalField> additionalFields)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -178,13 +265,17 @@ public final class MamManager extends Manager {
         }
     }
 
-    public MamQueryResult pageNext(MamQueryResult mamQueryResult, int count)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
-        RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getLast(), RSMSet.PageDirection.after);
-        return page(mamQueryResult.form, requestRsmSet);
-    }
-
+    /**
+     * Returns a page of the archive.
+     * 
+     * @param dataForm
+     * @param rsmSet
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult page(DataForm dataForm, RSMSet rsmSet)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), dataForm);
@@ -192,11 +283,40 @@ public final class MamManager extends Manager {
         return queryArchive(mamQueryIQ, 0);
     }
 
+    /**
+     * Returns the next page of the archive.
+     * 
+     * @param mamQueryResult
+     *            is the previous query result
+     * @param count
+     *            is the amount of messages that a page contains
+     * @return the MAM query result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
+    public MamQueryResult pageNext(MamQueryResult mamQueryResult, int count)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
+        RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getLast(), RSMSet.PageDirection.after);
+        return page(mamQueryResult.form, requestRsmSet);
+    }
+
     private void preparePageQuery(MamQueryIQ mamQueryIQ, RSMSet rsmSet) {
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.addExtension(rsmSet);
     }
 
+    /**
+     * Get the form fields supported by the server.
+     * 
+     * @return the MAM query result.
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamQueryResult retrieveFormFields()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         String queryId = UUID.randomUUID().toString();
@@ -253,6 +373,10 @@ public final class MamManager extends Manager {
         return new MamQueryResult(messages, mamFinExtension, DataForm.from(mamQueryIq));
     }
 
+    /**
+     * MAM query result class.
+     *
+     */
     public final static class MamQueryResult {
         public final List<Forwarded> messages;
         public final MamFinExtension mamFin;
@@ -288,6 +412,10 @@ public final class MamManager extends Manager {
         return form;
     }
 
+    /**
+     * Additional field class.
+     *
+     */
     public final static class AdditionalField {
         public final FormField.Type type;
         public final String variable;
@@ -300,6 +428,15 @@ public final class MamManager extends Manager {
         }
     }
 
+    /**
+     * Get the preferences stored in the server.
+     * 
+     * @return the MAM preferences result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamPrefsResult retrieveArchivingPreferences()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MamPrefIQ mamPrefIQ = prepareRetrievePreferencesStanza();
@@ -312,6 +449,21 @@ public final class MamManager extends Manager {
         return mamPrefIQ;
     }
 
+    /**
+     * Update the preferences in the server.
+     * 
+     * @param alwaysJids
+     *            is the list of JIDs that should always have messages to/from
+     *            archived in the user's store
+     * @param neverJids
+     *            is the list of JIDs that should never have messages to/from
+     *            archived in the user's store
+     * @return the MAM preferences result
+     * @throws NoResponseException
+     * @throws XMPPErrorException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
     public MamPrefsResult updateArchivingPreferences(List<String> alwaysJids, List<String> neverJids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MamPrefIQ mamPrefIQ = prepareUpdatePreferencesStanza(alwaysJids, neverJids);
@@ -324,6 +476,10 @@ public final class MamManager extends Manager {
         return mamPrefIQ;
     }
 
+    /**
+     * MAM preferences result class.
+     *
+     */
     public final static class MamPrefsResult {
         public final MamPrefsExtension mamPrefs;
         public final DataForm form;
