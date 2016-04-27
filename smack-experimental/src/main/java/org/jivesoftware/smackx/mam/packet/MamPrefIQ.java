@@ -32,12 +32,12 @@ import org.jivesoftware.smackx.mam.packet.MamPacket.MamPrefsExtension.NeverEleme
 public class MamPrefIQ extends IQ {
 
     /**
-     * the preferences element
+     * the preferences element.
      */
     public static final String ELEMENT = "prefs";
 
     /**
-     * the IQ NAMESPACE
+     * the IQ NAMESPACE.
      */
     public static final String NAMESPACE = MamPacket.NAMESPACE;
 
@@ -46,7 +46,7 @@ public class MamPrefIQ extends IQ {
     private List<String> neverJids;
 
     /**
-     * MAM preferences IQ constructor
+     * MAM preferences IQ constructor.
      * 
      * @param updatePrefs
      * @param alwaysJids

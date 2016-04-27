@@ -73,22 +73,22 @@ public class MamPacket {
     public static class MamFinExtension extends AbstractMamExtension {
 
         /**
-         * fin element
+         * fin element.
          */
         public static final String ELEMENT = "fin";
 
         /**
-         * RSM set
+         * RSM set.
          */
         private final RSMSet rsmSet;
 
         /**
-         * if is complete
+         * if is complete.
          */
         private final boolean complete;
 
         /**
-         * if is stable
+         * if is stable.
          */
         private final boolean stable;
 
@@ -171,17 +171,17 @@ public class MamPacket {
     public static class MamResultExtension extends AbstractMamExtension {
 
         /**
-         * result element
+         * result element.
          */
         public static final String ELEMENT = "result";
 
         /**
-         * id of the result
+         * id of the result.
          */
         private final String id;
 
         /**
-         * the forwarded element
+         * the forwarded element.
          */
         private final Forwarded forwarded;
 
@@ -246,22 +246,22 @@ public class MamPacket {
     public static class MamPrefsExtension extends AbstractMamExtension {
 
         /**
-         * preferences element
+         * preferences element.
          */
         public static final String ELEMENT = "prefs";
 
         /**
-         * the 'default' attribute
+         * the 'default' attribute.
          */
         private final String defaultField;
 
         /**
-         * the list of JIDs inside 'always' element
+         * the list of JIDs inside 'always' element.
          */
         private final List<String> alwaysJids;
 
         /**
-         * the list of JIDs inside 'never' element
+         * the list of JIDs inside 'never' element.
          */
         private final List<String> neverJids;
 
@@ -315,13 +315,13 @@ public class MamPacket {
         }
 
         /**
-         * Always element class
+         * Always element class.
          *
          */
         public static class AlwaysElement implements Element {
 
             /**
-             * list of JIDs
+             * list of JIDs.
              */
             private List<String> alwaysJids;
 

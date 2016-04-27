@@ -30,12 +30,12 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 public class MamQueryIQ extends IQ {
 
     /**
-     * the MAM query IQ element
+     * the MAM query IQ element.
      */
     public static final String ELEMENT = QUERY_ELEMENT;
 
     /**
-     * the MAM query IQ NAMESPACE
+     * the MAM query IQ NAMESPACE.
      */
     public static final String NAMESPACE = MamPacket.NAMESPACE;
 
