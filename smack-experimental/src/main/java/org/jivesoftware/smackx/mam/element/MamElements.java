@@ -146,6 +146,7 @@ public class MamElements {
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
+            xml.xmlnsAttribute(NAMESPACE);
             xml.optAttribute("queryid", queryId);
             xml.optBooleanAttribute("complete", complete);
             xml.optBooleanAttribute("stable", stable);
@@ -231,7 +232,8 @@ public class MamElements {
         public CharSequence toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
-            xml.optAttribute("queryId", getQueryId());
+            xml.xmlnsAttribute(NAMESPACE);
+            xml.optAttribute("queryid", getQueryId());
             xml.optAttribute("id", getId());
             xml.rightAngleBracket();
 
@@ -305,6 +307,7 @@ public class MamElements {
         public CharSequence toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
+            xml.xmlnsAttribute(NAMESPACE);
             xml.optAttribute("default", defaultField);
             xml.rightAngleBracket();
 
