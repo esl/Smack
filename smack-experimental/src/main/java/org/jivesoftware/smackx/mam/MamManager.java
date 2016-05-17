@@ -28,6 +28,7 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -100,9 +101,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult queryArchive(Integer max)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         return queryArchive(max, null, null, null, null);
     }
 
@@ -115,9 +117,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult queryArchive(String withJid)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         return queryArchive(null, null, null, withJid, null);
     }
 
@@ -134,9 +137,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult queryArchive(Date start, Date end)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         return queryArchive(null, start, end, null, null);
     }
 
@@ -149,9 +153,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult queryArchive(List<AdditionalField> additionalFields)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         return queryArchive(null, null, null, null, additionalFields);
     }
 
@@ -165,9 +170,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult queryArchiveWithStartDate(Date start)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         return queryArchive(null, start, null, null, null);
     }
 
@@ -181,9 +187,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult queryArchiveWithEndDate(Date end)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         return queryArchive(null, null, end, null, null);
     }
 
@@ -201,10 +208,11 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult queryArchive(Integer max, Date start, Date end, String withJid,
             List<AdditionalField> additionalFields)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         DataForm dataForm = null;
         String queryId = UUID.randomUUID().toString();
 
@@ -275,9 +283,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult page(DataForm dataForm, RSMSet rsmSet)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), dataForm);
         preparePageQuery(mamQueryIQ, rsmSet);
         return queryArchive(mamQueryIQ, 0);
@@ -295,9 +304,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult pageNext(MamQueryResult mamQueryResult, int count)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         RSMSet previousResultRsmSet = mamQueryResult.mamFin.getRSMSet();
         RSMSet requestRsmSet = new RSMSet(count, previousResultRsmSet.getLast(), RSMSet.PageDirection.after);
         return page(mamQueryResult.form, requestRsmSet);
@@ -316,9 +326,10 @@ public final class MamManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotLoggedInException 
      */
     public MamQueryResult retrieveFormFields()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         String queryId = UUID.randomUUID().toString();
         MamQueryIQ mamQueryIQ = prepareMamQueryIQGet(queryId);
         return queryArchive(mamQueryIQ, 0);
@@ -337,12 +348,12 @@ public final class MamManager extends Manager {
     }
 
     private MamQueryResult queryArchive(MamQueryIQ mamQueryIq, long extraTimeout)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         if (extraTimeout < 0) {
             throw new IllegalArgumentException("extra timeout must be zero or positive");
         }
 
-        final XMPPConnection connection = connection();
+        final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         MamFinExtension mamFinExtension = null;
 
         PacketCollector finMessageCollector = connection.createPacketCollector(new MamMessageFinFilter(mamQueryIq));
