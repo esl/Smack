@@ -17,14 +17,12 @@
 package org.jivesoftware.smackx.mam;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.mam.element.MamElements;
-import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
+import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,10 +61,7 @@ public class ResultsLimitTest extends MamTest {
     public void checkQueryLimitedResults() throws Exception {
         IQ iq = (IQ) PacketParserUtils.parseStanza(getIQLimitedResultsExample());
 
-        List<ExtensionElement> extensions = iq.getExtensions();
-        // MamFinExtension mamFinExtension = new MamFinProvider().parse(parser);
-
-        MamFinIQ mamFinExtension = (MamFinIQ) iq.getExtension("urn:xmpp:mam:1");
+        MamFinExtension mamFinExtension = MamFinExtension.from(iq);
 
         Assert.assertEquals(mamFinExtension.getRSMSet().getCount(), 16);
 

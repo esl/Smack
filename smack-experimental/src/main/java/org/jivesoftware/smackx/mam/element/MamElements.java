@@ -25,6 +25,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
+import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
 /**
  * MAM packet class.
@@ -64,6 +65,105 @@ public class MamElements {
             return NAMESPACE;
         }
 
+    }
+
+    /**
+     * MAM fin extension class.
+     *
+     */
+    public static class MamFinExtension extends AbstractMamExtension {
+
+        /**
+         * fin element.
+         */
+        public static final String ELEMENT = "fin";
+
+        /**
+         * RSM set.
+         */
+        private final RSMSet rsmSet;
+
+        /**
+         * if is complete.
+         */
+        private final boolean complete;
+
+        /**
+         * if is stable.
+         */
+        private final boolean stable;
+
+        /**
+         * MAM fin extension constructor.
+         * 
+         * @param queryId
+         * @param rsmSet
+         * @param complete
+         * @param stable
+         */
+        public MamFinExtension(String queryId, RSMSet rsmSet, boolean complete, boolean stable) {
+            super(queryId);
+            if (rsmSet == null) {
+                throw new IllegalArgumentException("rsmSet must not be null");
+            }
+            this.rsmSet = rsmSet;
+            this.complete = complete;
+            this.stable = stable;
+        }
+
+        /**
+         * Get RSM set.
+         * 
+         * @return the RSM set
+         */
+        public RSMSet getRSMSet() {
+            return rsmSet;
+        }
+
+        /**
+         * Return if it is complete.
+         * 
+         * @return true if it is complete
+         */
+        public boolean isComplete() {
+            return complete;
+        }
+
+        /**
+         * Return if it is stable.
+         * 
+         * @return true if it is stable
+         */
+        public boolean isStable() {
+            return stable;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public XmlStringBuilder toXML() {
+            XmlStringBuilder xml = new XmlStringBuilder();
+            xml.halfOpenElement(this);
+            xml.xmlnsAttribute(NAMESPACE);
+            xml.optAttribute("queryid", queryId);
+            xml.optBooleanAttribute("complete", complete);
+            xml.optBooleanAttribute("stable", stable);
+            if (rsmSet == null) {
+                xml.closeEmptyElement();
+            } else {
+                xml.rightAngleBracket();
+                xml.element(rsmSet);
+                xml.closeElement(this);
+            }
+            return xml;
+        }
+
+        public static MamFinExtension from(IQ iq) {
+            return (MamFinExtension) iq.getExtension(ELEMENT, NAMESPACE);
+        }
     }
 
     /**

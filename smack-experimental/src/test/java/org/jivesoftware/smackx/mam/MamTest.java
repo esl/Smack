@@ -22,15 +22,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.extensions.ExtensionsInitializer;
+import org.jivesoftware.smackx.ExperimentalInitializerTest;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Before;
 
-public class MamTest {
-
-    static {
-        (new ExtensionsInitializer()).initialize();
-    }
+public class MamTest extends ExperimentalInitializerTest {
 
     protected XMPPConnection connection;
     protected String queryId;

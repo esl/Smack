@@ -112,8 +112,6 @@ public class MamFinIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        // xml.halfOpenElement(this);
-        // xml.xmlnsAttribute(NAMESPACE);
         xml.optAttribute("queryid", queryId);
         xml.optBooleanAttribute("complete", complete);
         xml.optBooleanAttribute("stable", stable);
@@ -122,8 +120,6 @@ public class MamFinIQ extends IQ {
         } else {
             xml.rightAngleBracket();
             xml.element(rsmSet);
-            // xml.closeElement(this);
-            xml.rightAngleBracket();
         }
         return xml;
     }

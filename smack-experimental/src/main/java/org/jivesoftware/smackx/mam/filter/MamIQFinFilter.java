@@ -16,41 +16,20 @@
  */
 package org.jivesoftware.smackx.mam.filter;
 
-import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
-import org.jivesoftware.smackx.mam.element.MamFinIQ;
+import org.jivesoftware.smackx.mam.element.MamElements.AbstractMamExtension;
+import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 
-public class MamIQFinFilter extends FlexibleStanzaTypeFilter<IQ> {
-
-    private String queryId;
+public class MamIQFinFilter extends AbstractMamIQExtensionFilter {
 
     public MamIQFinFilter(MamQueryIQ mamQueryIQ) {
-        super(IQ.class);
-        this.queryId = mamQueryIQ.getQueryId();
+        super(mamQueryIQ);
     }
 
     @Override
-    protected boolean acceptSpecific(IQ iq) {
-        MamFinIQ mamExtension = getMamExtension(iq);
-
-        if (mamExtension == null) {
-            return false;
-        }
-
-        String resultQueryId = mamExtension.getQueryId();
-
-        if (queryId == null && resultQueryId == null) {
-            return true;
-        } else if (queryId != null && queryId.equals(resultQueryId)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected MamFinIQ getMamExtension(IQ iq) {
-        return MamFinIQ.from(iq);
+    protected AbstractMamExtension getMamExtension(IQ iq) {
+        return MamFinExtension.from(iq);
     }
 
 }

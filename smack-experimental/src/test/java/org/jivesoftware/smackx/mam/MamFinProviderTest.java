@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.mam;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.mam.element.MamFinIQ;
-import org.jivesoftware.smackx.mam.provider.MamFinProvider;
+import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
+import org.jivesoftware.smackx.mam.provider.MamFinExtensionProvider;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class MamFinProviderTest extends MamTest {
     @Test
     public void checkMamFinProvider() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(exmapleMamFinXml);
-        MamFinIQ mamFinExtension = new MamFinProvider().parse(parser);
+        MamFinExtension mamFinExtension = new MamFinExtensionProvider().parse(parser);
 
         Assert.assertTrue(mamFinExtension.isComplete());
         Assert.assertFalse(mamFinExtension.isStable());

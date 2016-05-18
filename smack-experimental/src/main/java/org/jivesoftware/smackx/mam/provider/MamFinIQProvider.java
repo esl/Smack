@@ -23,13 +23,13 @@ import org.jivesoftware.smackx.rsm.provider.RSMSetProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
- * MAM Fin Provider class.
+ * MAM Fin IQ Provider class.
  * 
  * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
  *      Archive Management</a>
  *
  */
-public class MamFinProvider extends IQProvider<MamFinIQ> {
+public class MamFinIQProvider extends IQProvider<MamFinIQ> {
 
     @Override
     public MamFinIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
