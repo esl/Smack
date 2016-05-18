@@ -16,20 +16,20 @@
  */
 package org.jivesoftware.smackx.mam.filter;
 
-import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.mam.element.MamPrefIQ;
 import org.jivesoftware.smackx.mam.element.MamElements.AbstractMamExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension;
 
-public class MamPrefsResultFilter extends AbstractMamMessageExtensionFilter {
+public class MamPrefsResultFilter extends AbstractMamIQExtensionFilter {
 
     public MamPrefsResultFilter(MamPrefIQ mamPrefIQ) {
         super();
     }
 
     @Override
-    protected AbstractMamExtension getMamExtension(Message message) {
-        return MamPrefsExtension.from(message);
+    protected AbstractMamExtension getMamExtension(IQ iq) {
+        return MamPrefsExtension.from(iq);
     }
 
 }

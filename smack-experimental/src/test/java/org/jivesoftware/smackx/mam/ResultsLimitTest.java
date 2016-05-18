@@ -17,9 +17,13 @@
 package org.jivesoftware.smackx.mam;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.mam.element.MamElements;
+import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.junit.Assert;
@@ -35,6 +39,12 @@ public class ResultsLimitTest extends MamTest {
                 + "</set>" + "</query>" + "</iq>";
     }
 
+    private String getIQLimitedResultsExample() {
+        return "<iq type='result' id='u29303'>" + "<fin xmlns='urn:xmpp:mam:1' complete='true'>"
+                + "<set xmlns='http://jabber.org/protocol/rsm'>" + "<first index='0'>23452-4534-1</first>"
+                + "<last>390-2342-22</last>" + "<count>16</count>" + "</set>" + "</fin>" + "</iq>";
+    }
+
     @Test
     public void checkResultsLimit() throws Exception {
         Method methodAddResultsLimit = MamManager.class.getDeclaredMethod("addResultsLimit", Integer.class,
@@ -47,6 +57,19 @@ public class ResultsLimitTest extends MamTest {
 
         methodAddResultsLimit.invoke(mamManager, 10, mamQueryIQ);
         Assert.assertEquals(mamQueryIQ.toString(), getResultsLimitStanza(mamQueryIQ.getStanzaId(), 10));
+    }
+
+    @Test
+    public void checkQueryLimitedResults() throws Exception {
+        IQ iq = (IQ) PacketParserUtils.parseStanza(getIQLimitedResultsExample());
+
+        List<ExtensionElement> extensions = iq.getExtensions();
+        // MamFinExtension mamFinExtension = new MamFinProvider().parse(parser);
+
+        MamFinIQ mamFinExtension = (MamFinIQ) iq.getExtension("urn:xmpp:mam:1");
+
+        Assert.assertEquals(mamFinExtension.getRSMSet().getCount(), 16);
+
     }
 
 }

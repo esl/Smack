@@ -16,9 +16,8 @@
  */
 package org.jivesoftware.smackx.mam.provider;
 
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smackx.mam.element.MamElements;
-import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
+import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.rsm.provider.RSMSetProvider;
 import org.xmlpull.v1.XmlPullParser;
@@ -30,10 +29,10 @@ import org.xmlpull.v1.XmlPullParser;
  *      Archive Management</a>
  *
  */
-public class MamFinProvider extends ExtensionElementProvider<MamElements.MamFinExtension> {
+public class MamFinProvider extends IQProvider<MamFinIQ> {
 
     @Override
-    public MamFinExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public MamFinIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
         String queryId = parser.getAttributeValue("", "queryid");
         boolean complete = Boolean.parseBoolean(parser.getAttributeValue("", "complete"));
         boolean stable = Boolean.parseBoolean(parser.getAttributeValue("", "stable"));
@@ -53,6 +52,6 @@ public class MamFinProvider extends ExtensionElementProvider<MamElements.MamFinE
             }
         }
 
-        return new MamFinExtension(queryId, rsmSet, complete, stable);
+        return new MamFinIQ(queryId, rsmSet, complete, stable);
     }
 }

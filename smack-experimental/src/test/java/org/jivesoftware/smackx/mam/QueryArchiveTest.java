@@ -84,7 +84,15 @@ public class QueryArchiveTest extends MamTest {
         Assert.assertEquals(message.toXML().toString(), getMamQueryResultExample());
 
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
+
         Assert.assertEquals(mamResultExtension.getId(), "34482-21985-73620");
+        Assert.assertEquals(mamResultExtension.getForwarded().getDelayInformation().getStamp(), date);
+
+        Message resultMessage = (Message) mamResultExtension.getForwarded().getForwardedStanza();
+        Assert.assertEquals(resultMessage.getFrom(), JidCreate.from("coven@chat.shakespeare.lit/firstwitch"));
+        Assert.assertEquals(resultMessage.getStanzaId(), "162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2");
+        Assert.assertEquals(resultMessage.getType(), Type.chat);
+        Assert.assertEquals(resultMessage.getBody(), "Thrice the brinded cat hath mew.");
     }
 
 }

@@ -53,11 +53,11 @@
     </extensionProvider>
 
 	<!-- XEP-0313 Message Archive Management -->
-	<extensionProvider>
+	<iqProvider>
         <elementName>fin</elementName>
         <namespace>urn:xmpp:mam:1</namespace>
         <className>org.jivesoftware.smackx.mam.provider.MamFinProvider</className>
-    </extensionProvider>
+    </iqProvider>
     <iqProvider>
         <elementName>prefs</elementName>
         <namespace>urn:xmpp:mam:1</namespace>
