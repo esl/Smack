@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus
+ * Copyright © 2016 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.mam.filter;
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
-import org.jivesoftware.smackx.mam.element.MamElements.AbstractMamExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
 
@@ -27,13 +26,14 @@ public class MamFinIQFilter extends FlexibleStanzaTypeFilter<IQ> {
 
     public MamFinIQFilter(MamQueryIQ mamQueryIQ) {
         super(IQ.class);
+        queryId = mamQueryIQ.getQueryId();
     }
 
     private String queryId;
 
     @Override
     protected boolean acceptSpecific(IQ iq) {
-        AbstractMamExtension mamExtension = getMamExtension(iq);
+        MamFinExtension mamExtension = getMamExtension(iq);
 
         if (mamExtension == null) {
             return false;
@@ -50,15 +50,14 @@ public class MamFinIQFilter extends FlexibleStanzaTypeFilter<IQ> {
         return false;
     }
 
-    protected AbstractMamExtension getMamExtension(IQ iq) {
-        MamFinIQ mamQueryIQ;
+    private MamFinExtension getMamExtension(IQ iq) {
+        MamFinIQ mamFinIQ;
         try {
-            mamQueryIQ = (MamFinIQ) iq;
+            mamFinIQ = (MamFinIQ) iq;
         } catch (ClassCastException e) {
             return null;
         }
-
-        return MamFinExtension.from(mamQueryIQ);
+        return MamFinExtension.from(mamFinIQ);
     }
 
 }

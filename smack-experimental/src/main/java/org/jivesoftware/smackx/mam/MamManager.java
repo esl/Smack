@@ -38,6 +38,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsResultIQ;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension;
@@ -519,8 +520,9 @@ public final class MamManager extends Manager {
 
         try {
             connection.createPacketCollectorAndSend(mamPrefIQ).nextResultOrThrow();
-            IQ mamPrefsIQ = prefsIQCollector.nextResultOrThrow(connection.getPacketReplyTimeout() + extraTimeout);
-            mamPrefsExtension = MamPrefsExtension.from(mamPrefsIQ);
+            IQ iq = prefsIQCollector.nextResultOrThrow(connection.getPacketReplyTimeout() + extraTimeout);
+            MamPrefsResultIQ mamPrefsResultIQ = MamPrefsResultIQ.from(iq);
+            mamPrefsExtension = MamPrefsExtension.from(mamPrefsResultIQ);
         } finally {
             prefsIQCollector.cancel();
         }
