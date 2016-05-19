@@ -146,8 +146,8 @@ public class MamElements {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(this);
-            xml.xmlnsAttribute(NAMESPACE);
+//            xml.halfOpenElement(this);
+//            xml.xmlnsAttribute(NAMESPACE);
             xml.optAttribute("queryid", queryId);
             xml.optBooleanAttribute("complete", complete);
             xml.optBooleanAttribute("stable", stable);
@@ -156,7 +156,7 @@ public class MamElements {
             } else {
                 xml.rightAngleBracket();
                 xml.element(rsmSet);
-                xml.closeElement(this);
+//                xml.closeElement(this);
             }
             return xml;
         }

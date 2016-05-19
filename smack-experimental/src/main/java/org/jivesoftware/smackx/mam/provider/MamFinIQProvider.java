@@ -17,9 +17,8 @@
 package org.jivesoftware.smackx.mam.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
-import org.jivesoftware.smackx.rsm.packet.RSMSet;
-import org.jivesoftware.smackx.rsm.provider.RSMSetProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /**
@@ -33,25 +32,8 @@ public class MamFinIQProvider extends IQProvider<MamFinIQ> {
 
     @Override
     public MamFinIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
-        String queryId = parser.getAttributeValue("", "queryid");
-        boolean complete = Boolean.parseBoolean(parser.getAttributeValue("", "complete"));
-        boolean stable = Boolean.parseBoolean(parser.getAttributeValue("", "stable"));
-
-        boolean done = false;
-        RSMSet rsmSet = null;
-        while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (parser.getName().equals(RSMSet.ELEMENT)) {
-                    rsmSet = new RSMSetProvider().parse(parser);
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals("fin")) {
-                    done = true;
-                }
-            }
-        }
-
-        return new MamFinIQ(queryId, rsmSet, complete, stable);
+        MamFinExtension mamFinExtension = new MamFinExtensionProvider().parse(parser);
+        return new MamFinIQ(mamFinExtension);
     }
+
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus and Fernando Ramirez
+ * Copyright © 2016 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.mam.element;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
 /**
@@ -56,22 +57,20 @@ public class MamFinIQ extends IQ {
     private final String queryId;
 
     /**
-     * MAM fin extension constructor.
+     * MamFinIQ constructor.
      * 
-     * @param queryId
-     * @param rsmSet
-     * @param complete
-     * @param stable
+     * @param mamFinExtension
      */
-    public MamFinIQ(String queryId, RSMSet rsmSet, boolean complete, boolean stable) {
+    public MamFinIQ(MamFinExtension mamFinExtension) {
         super(ELEMENT, NAMESPACE);
-        if (rsmSet == null) {
+        if (mamFinExtension.getRSMSet() == null) {
             throw new IllegalArgumentException("rsmSet must not be null");
         }
-        this.rsmSet = rsmSet;
-        this.complete = complete;
-        this.stable = stable;
-        this.queryId = queryId;
+        this.rsmSet = mamFinExtension.getRSMSet();
+        this.complete = mamFinExtension.isComplete();
+        this.stable = mamFinExtension.isStable();
+        this.queryId = mamFinExtension.getQueryId();
+        this.addExtension(mamFinExtension);
     }
 
     /**
@@ -112,20 +111,11 @@ public class MamFinIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.optAttribute("queryid", queryId);
-        xml.optBooleanAttribute("complete", complete);
-        xml.optBooleanAttribute("stable", stable);
-        if (rsmSet == null) {
-            xml.closeEmptyElement();
-        } else {
-            xml.rightAngleBracket();
-            xml.element(rsmSet);
-        }
         return xml;
     }
 
     public static MamFinIQ from(IQ iq) {
-        return (MamFinIQ) iq.getExtension(ELEMENT, NAMESPACE);
+        return (MamFinIQ) iq;
     }
 
 }
