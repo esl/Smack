@@ -44,17 +44,17 @@ public class MamPrefsIQ extends IQ {
     /**
      * true if it is a request for update preferences.
      */
-    public boolean updatePrefs;
+    private boolean updatePrefs;
 
     /**
      * list of always.
      */
-    public List<String> alwaysJids;
+    private List<String> alwaysJids;
 
     /**
      * list of never.
      */
-    public List<String> neverJids;
+    private List<String> neverJids;
 
     /**
      * MAM preferences IQ constructor.
