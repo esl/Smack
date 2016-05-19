@@ -39,6 +39,7 @@ import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamPrefIQ;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
+import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
@@ -354,7 +355,7 @@ public final class MamManager extends Manager {
         }
 
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
-        MamFinIQ mamFinExtension = null;
+        MamFinExtension mamFinExtension = null;
 
         PacketCollector finIQCollector = connection.createPacketCollector(new MamIQFinFilter(mamQueryIq));
 
@@ -366,7 +367,7 @@ public final class MamManager extends Manager {
         try {
             connection.createPacketCollectorAndSend(mamQueryIq).nextResultOrThrow();
             IQ mamFinIQ = finIQCollector.nextResultOrThrow(connection.getPacketReplyTimeout() + extraTimeout);
-            mamFinExtension = MamFinIQ.from(mamFinIQ);
+            mamFinExtension = MamFinExtension.from((MamFinIQ) mamFinIQ);
         } finally {
             resultCollector.cancel();
             finIQCollector.cancel();
@@ -390,10 +391,10 @@ public final class MamManager extends Manager {
      */
     public final static class MamQueryResult {
         public final List<Forwarded> messages;
-        public final MamFinIQ mamFin;
+        public final MamFinExtension mamFin;
         private final DataForm form;
 
-        private MamQueryResult(List<Forwarded> messages, MamFinIQ mamFin, DataForm form) {
+        private MamQueryResult(List<Forwarded> messages, MamFinExtension mamFin, DataForm form) {
             this.messages = messages;
             this.mamFin = mamFin;
             this.form = form;
