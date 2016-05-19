@@ -38,6 +38,12 @@ public class MamResultProviderTest {
             + "<body>Call me but love, and I'll be new baptized; Henceforth I never will be Romeo.</body>"
             + "</message>" + "</forwarded>" + "</result>";
 
+    String exampleResultMessage = "<message id='aeb213' to='juliet@capulet.lit/chamber'>"
+            + "<result xmlns='urn:xmpp:mam:1' queryid='f27' id='28482-98726-73623'>"
+            + "<forwarded xmlns='urn:xmpp:forward:0'>" + "<delay xmlns='urn:xmpp:delay' stamp='2010-07-10T23:08:25Z'/>"
+            + "<message xmlns='jabber:client' from='witch@shakespeare.lit' to='macbeth@shakespeare.lit'>"
+            + "<body>Hail to thee</body>" + "</message>" + "</forwarded>" + "</result>" + "</message>";
+
     @Test
     public void checkMamResultProvider() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(exampleMamResultXml);
@@ -58,6 +64,27 @@ public class MamResultProviderTest {
         Assert.assertEquals(message.getTo(), "juliet@capulet.lit/balcony");
         Assert.assertEquals(message.getBody(),
                 "Call me but love, and I'll be new baptized; Henceforth I never will be Romeo.");
+    }
+
+    @Test
+    public void checkResultsParse() throws Exception {
+        Message message = (Message) PacketParserUtils.parseStanza(exampleResultMessage);
+        MamResultExtension mamResultExtension = MamResultExtension.from(message);
+
+        Assert.assertEquals(mamResultExtension.getQueryId(), "f27");
+        Assert.assertEquals(mamResultExtension.getId(), "28482-98726-73623");
+
+        GregorianCalendar calendar = new GregorianCalendar(2010, 7 - 1, 10, 23, 8, 25);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = calendar.getTime();
+
+        Forwarded forwarded = mamResultExtension.getForwarded();
+        Assert.assertEquals(forwarded.getDelayInformation().getStamp(), date);
+
+        Message forwardedMessage = (Message) forwarded.getForwardedStanza();
+        Assert.assertEquals(forwardedMessage.getFrom(), "witch@shakespeare.lit");
+        Assert.assertEquals(forwardedMessage.getTo(), "macbeth@shakespeare.lit");
+        Assert.assertEquals(forwardedMessage.getBody(), "Hail to thee");
     }
 
 }

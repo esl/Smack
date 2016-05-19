@@ -366,23 +366,24 @@ public final class MamManager extends Manager {
 
         try {
             connection.createPacketCollectorAndSend(mamQueryIq).nextResultOrThrow();
-            IQ mamFinIQ = finIQCollector.nextResultOrThrow(connection.getPacketReplyTimeout() + extraTimeout);
-            mamFinExtension = MamFinExtension.from((MamFinIQ) mamFinIQ);
+            IQ iq = finIQCollector.nextResultOrThrow(connection.getPacketReplyTimeout() + extraTimeout);
+            MamFinIQ mamFinIQ = MamFinIQ.from(iq);
+            mamFinExtension = MamFinExtension.from(mamFinIQ);
         } finally {
             resultCollector.cancel();
             finIQCollector.cancel();
         }
 
-        List<Forwarded> messages = new ArrayList<>(resultCollector.getCollectedCount());
+        List<Forwarded> forwardedMessages = new ArrayList<>(resultCollector.getCollectedCount());
 
         for (Message resultMessage = resultCollector
                 .pollResult(); resultMessage != null; resultMessage = resultCollector.pollResult()) {
             // XEP-313 § 4.2
             MamResultExtension mamResultExtension = MamResultExtension.from(resultMessage);
-            messages.add(mamResultExtension.getForwarded());
+            forwardedMessages.add(mamResultExtension.getForwarded());
         }
 
-        return new MamQueryResult(messages, mamFinExtension, DataForm.from(mamQueryIq));
+        return new MamQueryResult(forwardedMessages, mamFinExtension, DataForm.from(mamQueryIq));
     }
 
     /**
@@ -390,12 +391,12 @@ public final class MamManager extends Manager {
      *
      */
     public final static class MamQueryResult {
-        public final List<Forwarded> messages;
+        public final List<Forwarded> forwardedMessages;
         public final MamFinExtension mamFin;
         private final DataForm form;
 
-        private MamQueryResult(List<Forwarded> messages, MamFinExtension mamFin, DataForm form) {
-            this.messages = messages;
+        private MamQueryResult(List<Forwarded> forwardedMessages, MamFinExtension mamFin, DataForm form) {
+            this.forwardedMessages = forwardedMessages;
             this.mamFin = mamFin;
             this.form = form;
         }
