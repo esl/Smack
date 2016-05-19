@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
  *      Archive Management</a>
  *
  */
-public class MamFinExtensionProvider extends ExtensionElementProvider<MamFinExtension> {
+public class MamFinProvider extends ExtensionElementProvider<MamFinExtension> {
 
     @Override
     public MamFinExtension parse(XmlPullParser parser, int initialDepth) throws Exception {

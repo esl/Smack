@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension.NeverEl
  *      Archive Management</a>
  *
  */
-public class MamPrefIQ extends IQ {
+public class MamPrefsIQ extends IQ {
 
     /**
      * the preferences element.
@@ -63,7 +63,7 @@ public class MamPrefIQ extends IQ {
      * @param alwaysJids
      * @param neverJids
      */
-    public MamPrefIQ(boolean updatePrefs, List<String> alwaysJids, List<String> neverJids) {
+    public MamPrefsIQ(boolean updatePrefs, List<String> alwaysJids, List<String> neverJids) {
         super(ELEMENT, NAMESPACE);
         this.updatePrefs = updatePrefs;
         this.alwaysJids = alwaysJids;
@@ -119,4 +119,5 @@ public class MamPrefIQ extends IQ {
 
         return xml;
     }
+
 }

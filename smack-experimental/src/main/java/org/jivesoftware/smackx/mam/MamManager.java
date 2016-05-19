@@ -37,15 +37,15 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.element.MamElements;
-import org.jivesoftware.smackx.mam.element.MamPrefIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
-import org.jivesoftware.smackx.mam.filter.MamIQFinFilter;
-import org.jivesoftware.smackx.mam.filter.MamMessageResultFilter;
-import org.jivesoftware.smackx.mam.filter.MamPrefsResultFilter;
+import org.jivesoftware.smackx.mam.filter.MamFinIQFilter;
+import org.jivesoftware.smackx.mam.filter.MamResultFilter;
+import org.jivesoftware.smackx.mam.filter.MamPrefsIQFilter;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -357,10 +357,10 @@ public final class MamManager extends Manager {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         MamFinExtension mamFinExtension = null;
 
-        PacketCollector finIQCollector = connection.createPacketCollector(new MamIQFinFilter(mamQueryIq));
+        PacketCollector finIQCollector = connection.createPacketCollector(new MamFinIQFilter(mamQueryIq));
 
         PacketCollector.Configuration resultCollectorConfiguration = PacketCollector.newConfiguration()
-                .setStanzaFilter(new MamMessageResultFilter(mamQueryIq)).setCollectorToReset(finIQCollector);
+                .setStanzaFilter(new MamResultFilter(mamQueryIq)).setCollectorToReset(finIQCollector);
 
         PacketCollector resultCollector = connection.createPacketCollector(resultCollectorConfiguration);
 
@@ -453,12 +453,12 @@ public final class MamManager extends Manager {
      */
     public MamPrefsResult retrieveArchivingPreferences() throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        MamPrefIQ mamPrefIQ = prepareRetrievePreferencesStanza();
+        MamPrefsIQ mamPrefIQ = prepareRetrievePreferencesStanza();
         return queryMamPrefs(mamPrefIQ, 0);
     }
 
-    private MamPrefIQ prepareRetrievePreferencesStanza() {
-        MamPrefIQ mamPrefIQ = new MamPrefIQ(false, null, null);
+    private MamPrefsIQ prepareRetrievePreferencesStanza() {
+        MamPrefsIQ mamPrefIQ = new MamPrefsIQ(false, null, null);
         mamPrefIQ.setType(IQ.Type.get);
         return mamPrefIQ;
     }
@@ -482,12 +482,12 @@ public final class MamManager extends Manager {
     public MamPrefsResult updateArchivingPreferences(List<String> alwaysJids, List<String> neverJids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
             NotLoggedInException {
-        MamPrefIQ mamPrefIQ = prepareUpdatePreferencesStanza(alwaysJids, neverJids);
+        MamPrefsIQ mamPrefIQ = prepareUpdatePreferencesStanza(alwaysJids, neverJids);
         return queryMamPrefs(mamPrefIQ, 0);
     }
 
-    private MamPrefIQ prepareUpdatePreferencesStanza(List<String> alwaysJids, List<String> neverJids) {
-        MamPrefIQ mamPrefIQ = new MamPrefIQ(true, alwaysJids, neverJids);
+    private MamPrefsIQ prepareUpdatePreferencesStanza(List<String> alwaysJids, List<String> neverJids) {
+        MamPrefsIQ mamPrefIQ = new MamPrefsIQ(true, alwaysJids, neverJids);
         mamPrefIQ.setType(IQ.Type.set);
         return mamPrefIQ;
     }
@@ -506,7 +506,7 @@ public final class MamManager extends Manager {
         }
     }
 
-    private MamPrefsResult queryMamPrefs(MamPrefIQ mamPrefIQ, long extraTimeout) throws NoResponseException,
+    private MamPrefsResult queryMamPrefs(MamPrefsIQ mamPrefIQ, long extraTimeout) throws NoResponseException,
             XMPPErrorException, NotConnectedException, InterruptedException, NotLoggedInException {
         if (extraTimeout < 0) {
             throw new IllegalArgumentException("extra timeout must be zero or positive");
@@ -515,7 +515,7 @@ public final class MamManager extends Manager {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
         MamPrefsExtension mamPrefsExtension = null;
 
-        PacketCollector prefsIQCollector = connection.createPacketCollector(new MamPrefsResultFilter(mamPrefIQ));
+        PacketCollector prefsIQCollector = connection.createPacketCollector(new MamPrefsIQFilter(mamPrefIQ));
 
         try {
             connection.createPacketCollectorAndSend(mamPrefIQ).nextResultOrThrow();

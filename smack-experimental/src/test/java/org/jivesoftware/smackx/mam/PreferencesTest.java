@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.jivesoftware.smackx.mam.element.MamElements;
-import org.jivesoftware.smackx.mam.element.MamPrefIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.junit.Assert;
 
 public class PreferencesTest extends MamTest {
@@ -44,7 +44,7 @@ public class PreferencesTest extends MamTest {
                 .getDeclaredMethod("prepareRetrievePreferencesStanza");
         prepareRetrievePreferencesStanza.setAccessible(true);
 
-        MamPrefIQ mamPrefIQ = (MamPrefIQ) prepareRetrievePreferencesStanza.invoke(mamManager);
+        MamPrefsIQ mamPrefIQ = (MamPrefsIQ) prepareRetrievePreferencesStanza.invoke(mamManager);
         Assert.assertEquals(mamPrefIQ.toString(), getRetrievePrefsStanzaExample(mamPrefIQ.getStanzaId()));
     }
 
@@ -61,7 +61,7 @@ public class PreferencesTest extends MamTest {
         List<String> neverJids = new ArrayList<>();
         neverJids.add("montague@montague.lit");
 
-        MamPrefIQ mamPrefIQ = (MamPrefIQ) prepareUpdatePreferencesStanza.invoke(mamManager, alwaysJids, neverJids);
+        MamPrefsIQ mamPrefIQ = (MamPrefsIQ) prepareUpdatePreferencesStanza.invoke(mamManager, alwaysJids, neverJids);
         Assert.assertEquals(mamPrefIQ.toString(), getUpdatePrefsStanzaExample(mamPrefIQ.getStanzaId()));
     }
 

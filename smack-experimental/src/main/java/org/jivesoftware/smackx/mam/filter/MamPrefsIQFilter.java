@@ -17,13 +17,13 @@
 package org.jivesoftware.smackx.mam.filter;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.mam.element.MamPrefIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamElements.AbstractMamExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension;
 
-public class MamPrefsResultFilter extends AbstractMamIQExtensionFilter {
+public class MamPrefsIQFilter extends AbstractMamIQExtensionFilter {
 
-    public MamPrefsResultFilter(MamPrefIQ mamPrefIQ) {
+    public MamPrefsIQFilter(MamPrefsIQ mamPrefIQ) {
         super();
     }
 

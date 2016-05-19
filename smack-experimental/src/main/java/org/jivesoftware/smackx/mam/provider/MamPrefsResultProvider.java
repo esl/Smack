@@ -19,25 +19,15 @@ package org.jivesoftware.smackx.mam.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smackx.mam.element.MamPrefIQ;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
+import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension;
 import org.xmlpull.v1.XmlPullParser;
 
-/**
- * MAM Preferences IQ Provider class.
- * 
- * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
- *      Archive Management</a>
- *
- */
-public class MamPrefIQProvider extends IQProvider<MamPrefIQ> {
+public class MamPrefsResultProvider extends ExtensionElementProvider<MamPrefsExtension> {
 
     @Override
-    public MamPrefIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
-
-        String iqType = parser.getAttributeValue("", "type");
-        boolean isUpdate = iqType.equals("set");
-
+    public MamPrefsExtension parse(XmlPullParser parser, int initialDepth) throws Exception {
         List<String> alwaysJids = null;
         List<String> neverJids = null;
 
@@ -52,13 +42,13 @@ public class MamPrefIQProvider extends IQProvider<MamPrefIQ> {
                     neverJids = iterateJids(parser, "never");
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                if (parser.getName().equals(MamPrefIQ.ELEMENT)) {
+                if (parser.getName().equals(MamPrefsIQ.ELEMENT)) {
                     done = true;
                 }
             }
         }
 
-        return new MamPrefIQ(isUpdate, alwaysJids, neverJids);
+        return new MamPrefsExtension(alwaysJids, neverJids);
     }
 
     private List<String> iterateJids(XmlPullParser parser, String listType) throws Exception {

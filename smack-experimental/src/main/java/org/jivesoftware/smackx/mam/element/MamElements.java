@@ -146,8 +146,8 @@ public class MamElements {
         @Override
         public XmlStringBuilder toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-//            xml.halfOpenElement(this);
-//            xml.xmlnsAttribute(NAMESPACE);
+            // xml.halfOpenElement(this);
+            // xml.xmlnsAttribute(NAMESPACE);
             xml.optAttribute("queryid", queryId);
             xml.optBooleanAttribute("complete", complete);
             xml.optBooleanAttribute("stable", stable);
@@ -156,7 +156,7 @@ public class MamElements {
             } else {
                 xml.rightAngleBracket();
                 xml.element(rsmSet);
-//                xml.closeElement(this);
+                // xml.closeElement(this);
             }
             return xml;
         }
@@ -262,11 +262,6 @@ public class MamElements {
         public static final String ELEMENT = "prefs";
 
         /**
-         * the 'default' attribute.
-         */
-        private final String defaultField;
-
-        /**
          * the list of JIDs inside 'always' element.
          */
         private final List<String> alwaysJids;
@@ -283,20 +278,28 @@ public class MamElements {
          * @param alwaysJids
          * @param neverJids
          */
-        public MamPrefsExtension(String defaultField, List<String> alwaysJids, List<String> neverJids) {
+        public MamPrefsExtension(List<String> alwaysJids, List<String> neverJids) {
             super();
-            this.defaultField = defaultField;
             this.alwaysJids = alwaysJids;
             this.neverJids = neverJids;
         }
 
         /**
-         * Get the 'default' attribute value.
+         * Get the list of always.
          * 
-         * @return the 'default' attribute value
+         * @return list of always
          */
-        public String getDefault() {
-            return defaultField;
+        public List<String> getAlwaysJids() {
+            return alwaysJids;
+        }
+
+        /**
+         * Get the list of never.
+         * 
+         * @return the list of never
+         */
+        public List<String> getNeverJids() {
+            return neverJids;
         }
 
         @Override
@@ -307,9 +310,7 @@ public class MamElements {
         @Override
         public CharSequence toXML() {
             XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(this);
-            xml.xmlnsAttribute(NAMESPACE);
-            xml.optAttribute("default", defaultField);
+            xml.optAttribute("default", "roster");
             xml.rightAngleBracket();
 
             AlwaysElement alwaysElement = new AlwaysElement(alwaysJids);
@@ -318,7 +319,6 @@ public class MamElements {
             NeverElement neverElement = new NeverElement(neverJids);
             xml.element(neverElement);
 
-            xml.closeElement(this);
             return xml;
         }
 

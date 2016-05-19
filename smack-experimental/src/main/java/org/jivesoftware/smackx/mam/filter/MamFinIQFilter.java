@@ -23,9 +23,9 @@ import org.jivesoftware.smackx.mam.element.MamElements.AbstractMamExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
 
-public class MamIQFinFilter extends FlexibleStanzaTypeFilter<IQ> {
+public class MamFinIQFilter extends FlexibleStanzaTypeFilter<IQ> {
 
-    public MamIQFinFilter(MamQueryIQ mamQueryIQ) {
+    public MamFinIQFilter(MamQueryIQ mamQueryIQ) {
         super(IQ.class);
     }
 
@@ -53,11 +53,11 @@ public class MamIQFinFilter extends FlexibleStanzaTypeFilter<IQ> {
     protected AbstractMamExtension getMamExtension(IQ iq) {
         MamFinIQ mamQueryIQ;
         try {
-            mamQueryIQ = (MamFinIQ)iq;
+            mamQueryIQ = (MamFinIQ) iq;
         } catch (ClassCastException e) {
             return null;
         }
-        
+
         return MamFinExtension.from(mamQueryIQ);
     }
 

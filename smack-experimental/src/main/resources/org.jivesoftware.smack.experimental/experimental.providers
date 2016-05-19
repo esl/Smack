@@ -56,7 +56,12 @@
     <iqProvider>
         <elementName>prefs</elementName>
         <namespace>urn:xmpp:mam:1</namespace>
-        <className>org.jivesoftware.smackx.mam.provider.MamPrefIQProvider</className>
+        <className>org.jivesoftware.smackx.mam.provider.MamPrefsIQProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>prefs</elementName>
+        <namespace>urn:xmpp:mam:1</namespace>
+        <className>org.jivesoftware.smackx.mam.provider.MamPrefsResultIQProvider</className>
     </iqProvider>
     <iqProvider>
         <elementName>query</elementName>
@@ -69,9 +74,14 @@
         <className>org.jivesoftware.smackx.mam.provider.MamFinIQProvider</className>
     </iqProvider>
     <extensionProvider>
+        <elementName>prefs</elementName>
+        <namespace>urn:xmpp:mam:1</namespace>
+        <className>org.jivesoftware.smackx.mam.provider.MamPrefsResultProvider</className>
+    </extensionProvider>
+    <extensionProvider>
         <elementName>fin</elementName>
         <namespace>urn:xmpp:mam:1</namespace>
-        <className>org.jivesoftware.smackx.mam.provider.MamFinExtensionProvider</className>
+        <className>org.jivesoftware.smackx.mam.provider.MamFinProvider</className>
     </extensionProvider>
     <extensionProvider>
         <elementName>result</elementName>

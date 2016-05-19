@@ -17,23 +17,16 @@
 package org.jivesoftware.smackx.mam.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smackx.mam.element.MamElements.MamFinExtension;
-import org.jivesoftware.smackx.mam.element.MamFinIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsResultIQ;
+import org.jivesoftware.smackx.mam.element.MamElements.MamPrefsExtension;
 import org.xmlpull.v1.XmlPullParser;
 
-/**
- * MAM Fin IQ Provider class.
- * 
- * @see <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313: Message
- *      Archive Management</a>
- *
- */
-public class MamFinIQProvider extends IQProvider<MamFinIQ> {
+public class MamPrefsResultIQProvider extends IQProvider<MamPrefsResultIQ> {
 
     @Override
-    public MamFinIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
-        MamFinExtension mamFinExtension = new MamFinProvider().parse(parser);
-        return new MamFinIQ(mamFinExtension);
+    public MamPrefsResultIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
+        MamPrefsExtension mamPrefsExtension = new MamPrefsResultProvider().parse(parser);
+        return new MamPrefsResultIQ(mamPrefsExtension);
     }
 
 }

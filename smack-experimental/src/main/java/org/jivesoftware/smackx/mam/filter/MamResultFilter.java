@@ -21,9 +21,9 @@ import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.mam.element.MamElements.AbstractMamExtension;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 
-public class MamMessageResultFilter extends AbstractMamMessageExtensionFilter {
+public class MamResultFilter extends AbstractMamMessageExtensionFilter {
 
-    public MamMessageResultFilter(MamQueryIQ mamQueryIQ) {
+    public MamResultFilter(MamQueryIQ mamQueryIQ) {
         super(mamQueryIQ);
     }
 
