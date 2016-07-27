@@ -86,6 +86,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | Google GCM JSON payload                     | n/a                                                  | Semantically the same as XEP-0335: JSON Containers |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
 | Message Archive Management                  | [XEP-0313](http://xmpp.org/extensions/xep-0313.html) | Query and control an archive of messages stored on a server. |
+| Multi-User Chat Light                       | [XEP-xxxx]( https://s3.amazonaws.com/uploads.hipchat.com/15025/1268415/d9ByVbihpLmzxBI/XEP-xxxx.Multi.User.Chat.Light.pdf) | Multi-User Chats for mobile XMPP applications and specific enviroment. |
 
 
 Legacy Smack Extensions and currently supported XEPs of smack-legacy
