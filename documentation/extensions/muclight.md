@@ -117,7 +117,7 @@ Manage changes on room name, subject and other configurations
 if (message.hasExtension(MUCLightElements.ConfigurationsChangeExtension.ELEMENT, MUCLightElements.ConfigurationsChangeExtension.NAMESPACE)) {
   
   // Get the configurations extension
-  MUCLightElements.ConfigurationsChangeExtension configurationsChangeExtension = message.getExtension(MUCLightElements.ConfigurationsChangeExtension.ELEMENT, MUCLightElements.ConfigurationsChangeExtension.NAMESPACE);
+  MUCLightElements.ConfigurationsChangeExtension configurationsChangeExtension = MUCLightElements.ConfigurationsChangeExtension.from(message);
 
   // Get new room name
   String roomName = configurationsChangeExtension.getRoomName();
@@ -214,7 +214,7 @@ Manage occupants modifications
 if (message.hasExtension(MUCLightElements.AffiliationsChangeExtension.ELEMENT, MUCLightElements.AffiliationsChangeExtension.NAMESPACE)) {
   
   // Get the affiliations change extension
-  MUCLightElements.AffiliationsChangeExtension affiliationsChangeExtension = message.getExtension(MUCLightElements.AffiliationsChangeExtension.ELEMENT, MUCLightElements.AffiliationsChangeExtension.NAMESPACE);
+  MUCLightElements.AffiliationsChangeExtension affiliationsChangeExtension = MUCLightElements.AffiliationsChangeExtension.from(message);
 
   // Get the new affiliations
   HashMap<EntityJid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
