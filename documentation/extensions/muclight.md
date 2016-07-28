@@ -305,10 +305,10 @@ List<Jid> jids = multiUserChatLightManager.getUsersBlocked(mucLightService);
 
 ```
 // Block one room
-boolean blocked = multiUserChatLightManager.blockRoom(mucLightService, roomJid);
+multiUserChatLightManager.blockRoom(mucLightService, roomJid);
 
 // Block several rooms
-boolean blocked = multiUserChatLightManager.blockRooms(mucLightService, roomsJids);
+multiUserChatLightManager.blockRooms(mucLightService, roomsJids);
 ```
 *mucLightService* is a `DomainBareJid`
 
@@ -320,10 +320,10 @@ boolean blocked = multiUserChatLightManager.blockRooms(mucLightService, roomsJid
 
 ```
 // Block one user
-boolean blocked = multiUserChatLightManager.blockUser(mucLightService, userJid);
+multiUserChatLightManager.blockUser(mucLightService, userJid);
 
 // Block several users
-boolean blocked = multiUserChatLightManager.blockUsers(mucLightService, usersJids);
+multiUserChatLightManager.blockUsers(mucLightService, usersJids);
 ```
 *mucLightService* is a `DomainBareJid`
 
@@ -335,10 +335,10 @@ boolean blocked = multiUserChatLightManager.blockUsers(mucLightService, usersJid
 
 ```
 // Unblock one room
-boolean unblocked = multiUserChatLightManager.unblockRoom(mucLightService, roomJid);
+multiUserChatLightManager.unblockRoom(mucLightService, roomJid);
 
 // Unblock several rooms
-boolean unblocked = multiUserChatLightManager.unblockRooms(mucLightService, roomsJids);
+multiUserChatLightManager.unblockRooms(mucLightService, roomsJids);
 ```
 *mucLightService* is a `DomainBareJid`
 
@@ -350,10 +350,10 @@ boolean unblocked = multiUserChatLightManager.unblockRooms(mucLightService, room
 
 ```
 // Unblock one user
-boolean unblocked = multiUserChatLightManager.unblockUser(mucLightService, userJid);
+multiUserChatLightManager.unblockUser(mucLightService, userJid);
 
 // Unblock several users
-boolean unblocked = multiUserChatLightManager.unblockUsers(mucLightService, usersJids);
+multiUserChatLightManager.unblockUsers(mucLightService, usersJids);
 ```
 *mucLightService* is a `DomainBareJid`
 
