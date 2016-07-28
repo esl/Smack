@@ -37,18 +37,18 @@ Obtain a MUC Light
 ```
 MultiUserChatLight multiUserChatLight = multiUserChatLightManager.getMultiUserChatLight(roomJid);
 ```
-`roomJid` is a Jid
+`roomJid` is a EntityBareJid
 
 
 Create a new room
 -----------------
 
 ```
-boolean created = multiUserChatLight.create(roomName, occupants);
+multiUserChatLight.create(roomName, occupants);
 ```
 or
 ```
-boolean created = multiUserChatLight.create(roomName, subject, customConfigs, occupants);
+multiUserChatLight.create(roomName, subject, customConfigs, occupants);
 ```
 
 *roomName* is a `String`
@@ -64,7 +64,7 @@ Destroy a room
 ---------------
 
 ```
-boolean destroyed = multiUserChatLight.destroy();
+multiUserChatLight.destroy();
 ```
 
 
@@ -72,7 +72,7 @@ Leave a room
 -------------
 
 ```
-boolean left = multiUserChatLight.leave();
+multiUserChatLight.leave();
 ```
 
 
@@ -80,7 +80,7 @@ Change room name
 ----------------
 
 ```
-boolean roomNameChanged = multiUserChatLight.changeRoomName(roomName);
+multiUserChatLight.changeRoomName(roomName);
 ```
 *roomName* is a `String`
 
@@ -89,7 +89,7 @@ Change subject
 --------------
 
 ```
-boolean roomNameChanged = multiUserChatLight.changeSubject(subject);
+multiUserChatLight.changeSubject(subject);
 ```
 *subject* is a `String`
 
@@ -98,11 +98,11 @@ Set room configurations
 -----------------------
 
 ```
-boolean configsChanged = multiUserChatLight.setRoomConfigs(customConfigs);
+multiUserChatLight.setRoomConfigs(customConfigs);
 ```
 or
 ```
-boolean configsChanged = multiUserChatLight.setRoomConfigs(roomName, customConfigs);
+multiUserChatLight.setRoomConfigs(roomName, customConfigs);
 ```
 *customConfigs* is a `HashMap<String, String>` (which means [property name, value])
 
@@ -201,7 +201,7 @@ Manage room occupants
 
 To change room occupants:
 ```
-boolean affiliationsChanged = multiUserChatLight.changeAffiliations(affiliations);
+multiUserChatLight.changeAffiliations(affiliations);
 ```
 *affiliations* is a `HashMap<Jid, MUCLightAffiliation>`
 
