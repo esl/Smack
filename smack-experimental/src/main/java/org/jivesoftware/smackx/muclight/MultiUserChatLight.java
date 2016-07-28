@@ -33,10 +33,8 @@ import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
-import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -52,7 +50,6 @@ import org.jivesoftware.smackx.muclight.element.MUCLightInfoIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightSetConfigsIQ;
 import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * MUCLight class.
@@ -259,31 +256,20 @@ public class MultiUserChatLight {
      * @param subject
      * @param customConfigs
      * @param occupants
-     * @return true if it was successfully created
-     * @throws NotConnectedException
-     * @throws XmppStringprepException
-     * @throws InterruptedException
+     * @throws Exception
      */
-    public boolean create(String roomName, String subject, HashMap<String, String> customConfigs, List<Jid> occupants)
-            throws NotConnectedException, XmppStringprepException, InterruptedException {
+    public void create(String roomName, String subject, HashMap<String, String> customConfigs, List<Jid> occupants)
+            throws Exception {
         MUCLightCreateIQ createMUCLightIQ = new MUCLightCreateIQ(room, roomName, occupants);
 
         connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
         messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
 
-        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createBare(room.asDomainBareJid()),
-                new StanzaTypeFilter(IQ.class));
-
         try {
-            IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, createMUCLightIQ)
-                    .nextResultOrThrow();
-            return responseIq.getType().equals(IQ.Type.result);
-        } catch (NoResponseException | XMPPErrorException e) {
+            connection.createPacketCollectorAndSend(createMUCLightIQ).nextResultOrThrow();
+        } catch (InterruptedException | NoResponseException | XMPPErrorException e) {
             removeConnectionCallbacks();
-            return false;
-        } catch (InterruptedException e) {
-            removeConnectionCallbacks();
-            return false;
+            throw e;
         }
     }
 
@@ -292,41 +278,31 @@ public class MultiUserChatLight {
      * 
      * @param roomName
      * @param occupants
-     * @return true if it was successfully created
-     * @throws NotConnectedException
-     * @throws XmppStringprepException
-     * @throws InterruptedException
+     * @throws Exception
      */
-    public boolean create(String roomName, List<Jid> occupants)
-            throws NotConnectedException, XmppStringprepException, InterruptedException {
-        return create(roomName, null, null, occupants);
+    public void create(String roomName, List<Jid> occupants) throws Exception {
+        create(roomName, null, null, occupants);
     }
 
     /**
      * Leave the MUCLight.
      * 
-     * @return true if it was successfully left.
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws NoResponseException
      * @throws XMPPErrorException
      */
-    public boolean leave() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
+    public void leave() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         HashMap<Jid, MUCLightAffiliation> affiliations = new HashMap<>();
         affiliations.put(connection.getUser(), MUCLightAffiliation.none);
 
         MUCLightChangeAffiliationsIQ changeAffiliationsIQ = new MUCLightChangeAffiliationsIQ(room, affiliations);
-        StanzaFilter responseFilter = new AndFilter(FromMatchesFilter.createBare(room.asDomainBareJid()),
-                new StanzaTypeFilter(IQ.class));
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, changeAffiliationsIQ)
-                .nextResultOrThrow();
+        IQ responseIq = connection.createPacketCollectorAndSend(changeAffiliationsIQ).nextResultOrThrow();
         boolean roomLeft = responseIq.getType().equals(IQ.Type.result);
 
         if (roomLeft) {
             removeConnectionCallbacks();
         }
-
-        return roomLeft;
     }
 
     /**
@@ -342,9 +318,8 @@ public class MultiUserChatLight {
     public MUCLightRoomInfo getFullInfo(String version)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightGetInfoIQ mucLightGetInfoIQ = new MUCLightGetInfoIQ(room, version);
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightGetInfoIQ, connection);
 
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, mucLightGetInfoIQ).nextResultOrThrow();
+        IQ responseIq = connection.createPacketCollectorAndSend(mucLightGetInfoIQ).nextResultOrThrow();
         MUCLightInfoIQ mucLightInfoResponseIQ = (MUCLightInfoIQ) responseIq;
 
         return new MUCLightRoomInfo(mucLightInfoResponseIQ.getVersion(), room,
@@ -378,12 +353,8 @@ public class MultiUserChatLight {
     public MUCLightRoomConfiguration getConfiguration(String version)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightGetConfigsIQ mucLightGetConfigsIQ = new MUCLightGetConfigsIQ(room, version);
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightGetConfigsIQ, connection);
-
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, mucLightGetConfigsIQ)
-                .nextResultOrThrow();
+        IQ responseIq = connection.createPacketCollectorAndSend(mucLightGetConfigsIQ).nextResultOrThrow();
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) responseIq;
-
         return mucLightConfigurationIQ.getConfiguration();
     }
 
@@ -414,10 +385,8 @@ public class MultiUserChatLight {
     public HashMap<Jid, MUCLightAffiliation> getAffiliations(String version)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightGetAffiliationsIQ mucLightGetAffiliationsIQ = new MUCLightGetAffiliationsIQ(room, version);
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightGetAffiliationsIQ, connection);
 
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, mucLightGetAffiliationsIQ)
-                .nextResultOrThrow();
+        IQ responseIq = connection.createPacketCollectorAndSend(mucLightGetAffiliationsIQ).nextResultOrThrow();
         MUCLightAffiliationsIQ mucLightAffiliationsIQ = (MUCLightAffiliationsIQ) responseIq;
 
         return mucLightAffiliationsIQ.getAffiliations();
@@ -441,95 +410,77 @@ public class MultiUserChatLight {
      * Change the MUC Light affiliations.
      * 
      * @param affiliations
-     * @return true if it was successfully done.
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean changeAffiliations(HashMap<Jid, MUCLightAffiliation> affiliations)
+    public void changeAffiliations(HashMap<Jid, MUCLightAffiliation> affiliations)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightChangeAffiliationsIQ changeAffiliationsIQ = new MUCLightChangeAffiliationsIQ(room, affiliations);
-        StanzaFilter responseFilter = new IQReplyFilter(changeAffiliationsIQ, connection);
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, changeAffiliationsIQ)
-                .nextResultOrThrow();
-        return responseIq.getType().equals(IQ.Type.result);
+        connection.createPacketCollectorAndSend(changeAffiliationsIQ).nextResultOrThrow();
     }
 
     /**
      * Destroy the MUC Light. Only will work if it is requested by the owner.
      * 
-     * @return true if it was successfully destroyed.
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean destroy()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void destroy() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightDestroyIQ mucLightDestroyIQ = new MUCLightDestroyIQ(room);
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightDestroyIQ, connection);
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, mucLightDestroyIQ).nextResultOrThrow();
+        IQ responseIq = connection.createPacketCollectorAndSend(mucLightDestroyIQ).nextResultOrThrow();
         boolean roomDestroyed = responseIq.getType().equals(IQ.Type.result);
 
         if (roomDestroyed) {
             removeConnectionCallbacks();
         }
-
-        return roomDestroyed;
     }
 
     /**
      * Change the subject of the MUC Light.
      * 
      * @param subject
-     * @return true if the subject was successfully changed
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean changeSubject(String subject)
+    public void changeSubject(String subject)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightSetConfigsIQ mucLightSetConfigIQ = new MUCLightSetConfigsIQ(room, null, subject, null);
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightSetConfigIQ, connection);
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, mucLightSetConfigIQ)
-                .nextResultOrThrow();
-        return responseIq.getType().equals(IQ.Type.result);
+        connection.createPacketCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
     }
 
     /**
      * Change the name of the room.
      * 
      * @param roomName
-     * @return true if the room name was successfully changed
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean changeRoomName(String roomName)
+    public void changeRoomName(String roomName)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightSetConfigsIQ mucLightSetConfigIQ = new MUCLightSetConfigsIQ(room, roomName, null);
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightSetConfigIQ, connection);
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, mucLightSetConfigIQ)
-                .nextResultOrThrow();
-        return responseIq.getType().equals(IQ.Type.result);
+        connection.createPacketCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
     }
 
     /**
      * Set the room configurations.
      * 
      * @param customConfigs
-     * @return true if the configurations were successfully set
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean setRoomConfigs(HashMap<String, String> customConfigs)
+    public void setRoomConfigs(HashMap<String, String> customConfigs)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return setRoomConfigs(null, customConfigs);
+        setRoomConfigs(null, customConfigs);
     }
 
     /**
@@ -537,19 +488,15 @@ public class MultiUserChatLight {
      * 
      * @param roomName
      * @param customConfigs
-     * @return true if the configurations were successfully set
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean setRoomConfigs(String roomName, HashMap<String, String> customConfigs)
+    public void setRoomConfigs(String roomName, HashMap<String, String> customConfigs)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCLightSetConfigsIQ mucLightSetConfigIQ = new MUCLightSetConfigsIQ(room, roomName, customConfigs);
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightSetConfigIQ, connection);
-        IQ responseIq = connection.createPacketCollectorAndSend(responseFilter, mucLightSetConfigIQ)
-                .nextResultOrThrow();
-        return responseIq.getType().equals(IQ.Type.result);
+        connection.createPacketCollectorAndSend(mucLightSetConfigIQ).nextResultOrThrow();
     }
 
 }

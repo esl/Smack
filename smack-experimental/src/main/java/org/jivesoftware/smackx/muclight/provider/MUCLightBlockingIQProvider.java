@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muclight.provider;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smackx.muclight.element.MUCLightBlockingIQ;
 import org.jxmpp.jid.Jid;
@@ -37,8 +38,6 @@ public class MUCLightBlockingIQProvider extends IQProvider<MUCLightBlockingIQ> {
 
     @Override
     public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth) throws Exception {
-        boolean isSet = false;
-        boolean isGet = false;
         HashMap<Jid, Boolean> rooms = null;
         HashMap<Jid, Boolean> users = null;
 
@@ -62,7 +61,9 @@ public class MUCLightBlockingIQProvider extends IQProvider<MUCLightBlockingIQ> {
             }
         }
 
-        return new MUCLightBlockingIQ(isSet, isGet, rooms, users);
+        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, users);
+        mucLightBlockingIQ.setType(Type.result);
+        return mucLightBlockingIQ;
     }
 
     private HashMap<Jid, Boolean> parseBlocking(XmlPullParser parser, HashMap<Jid, Boolean> map)

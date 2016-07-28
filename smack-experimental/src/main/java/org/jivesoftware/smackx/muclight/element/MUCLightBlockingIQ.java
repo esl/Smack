@@ -36,49 +36,19 @@ public class MUCLightBlockingIQ extends IQ {
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = MultiUserChatLight.NAMESPACE + MultiUserChatLight.BLOCKING;
 
-    private final boolean isSet;
-    private final boolean isGet;
     private final HashMap<Jid, Boolean> rooms;
     private final HashMap<Jid, Boolean> users;
 
     /**
      * MUC Light blocking IQ constructor.
      * 
-     * @param isSet
-     * @param isGet
      * @param rooms
      * @param users
      */
-    public MUCLightBlockingIQ(boolean isSet, boolean isGet, HashMap<Jid, Boolean> rooms, HashMap<Jid, Boolean> users) {
+    public MUCLightBlockingIQ(HashMap<Jid, Boolean> rooms, HashMap<Jid, Boolean> users) {
         super(ELEMENT, NAMESPACE);
-        this.isSet = isSet;
-        this.isGet = isGet;
         this.rooms = rooms;
         this.users = users;
-
-        if (isSet) {
-            this.setType(Type.set);
-        } else if (isGet) {
-            this.setType(Type.get);
-        }
-    }
-
-    /**
-     * Get if is set.
-     * 
-     * @return true if the stanza is 'set' type
-     */
-    public boolean isSet() {
-        return isSet;
-    }
-
-    /**
-     * Get if is get.
-     * 
-     * @return true if the stanza is 'get' type
-     */
-    public boolean isGet() {
-        return isGet;
     }
 
     /**

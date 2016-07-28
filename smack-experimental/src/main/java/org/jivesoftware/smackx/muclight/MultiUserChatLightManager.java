@@ -248,7 +248,8 @@ public final class MultiUserChatLightManager extends Manager {
 
     private MUCLightBlockingIQ getBlockingList(DomainBareJid mucLightService)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
-        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(false, true, null, null);
+        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, null);
+        mucLightBlockingIQ.setType(Type.get);
         mucLightBlockingIQ.setTo(mucLightService);
 
         StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
@@ -264,17 +265,16 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param roomJid
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean blockRoom(DomainBareJid mucLightService, Jid roomJid)
+    public void blockRoom(DomainBareJid mucLightService, Jid roomJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> rooms = new HashMap<>();
         rooms.put(roomJid, false);
-        return sendBlockRooms(mucLightService, rooms);
+        sendBlockRooms(mucLightService, rooms);
     }
 
     /**
@@ -282,31 +282,26 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param roomsJids
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean blockRooms(DomainBareJid mucLightService, List<Jid> roomsJids)
+    public void blockRooms(DomainBareJid mucLightService, List<Jid> roomsJids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> rooms = new HashMap<>();
         for (Jid jid : roomsJids) {
             rooms.put(jid, false);
         }
-        return sendBlockRooms(mucLightService, rooms);
+        sendBlockRooms(mucLightService, rooms);
     }
 
-    private boolean sendBlockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
+    private void sendBlockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
-        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(true, false, rooms, null);
+        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
+        mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
-        IQ responseIq = connection().createPacketCollectorAndSend(responseFilter, mucLightBlockingIQ)
-                .nextResultOrThrow();
-
-        return responseIq.getType().equals(Type.result);
+        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
     /**
@@ -314,17 +309,16 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param userJid
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean blockUser(DomainBareJid mucLightService, Jid userJid)
+    public void blockUser(DomainBareJid mucLightService, Jid userJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> users = new HashMap<>();
         users.put(userJid, false);
-        return sendBlockUsers(mucLightService, users);
+        sendBlockUsers(mucLightService, users);
     }
 
     /**
@@ -332,31 +326,26 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param usersJids
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean blockUsers(DomainBareJid mucLightService, List<Jid> usersJids)
+    public void blockUsers(DomainBareJid mucLightService, List<Jid> usersJids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> users = new HashMap<>();
         for (Jid jid : usersJids) {
             users.put(jid, false);
         }
-        return sendBlockUsers(mucLightService, users);
+        sendBlockUsers(mucLightService, users);
     }
 
-    private boolean sendBlockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
+    private void sendBlockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
-        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(true, false, null, users);
+        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
+        mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
-        IQ responseIq = connection().createPacketCollectorAndSend(responseFilter, mucLightBlockingIQ)
-                .nextResultOrThrow();
-
-        return responseIq.getType().equals(Type.result);
+        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
     /**
@@ -364,17 +353,16 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param roomJid
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean unblockRoom(DomainBareJid mucLightService, Jid roomJid)
+    public void unblockRoom(DomainBareJid mucLightService, Jid roomJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> rooms = new HashMap<>();
         rooms.put(roomJid, true);
-        return sendUnblockRooms(mucLightService, rooms);
+        sendUnblockRooms(mucLightService, rooms);
     }
 
     /**
@@ -382,31 +370,26 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param roomsJids
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean unblockRooms(DomainBareJid mucLightService, List<Jid> roomsJids)
+    public void unblockRooms(DomainBareJid mucLightService, List<Jid> roomsJids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> rooms = new HashMap<>();
         for (Jid jid : roomsJids) {
             rooms.put(jid, true);
         }
-        return sendBlockRooms(mucLightService, rooms);
+        sendUnblockRooms(mucLightService, rooms);
     }
 
-    private boolean sendUnblockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
+    private void sendUnblockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
-        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(true, false, rooms, null);
+        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
+        mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
-        IQ responseIq = connection().createPacketCollectorAndSend(responseFilter, mucLightBlockingIQ)
-                .nextResultOrThrow();
-
-        return responseIq.getType().equals(Type.result);
+        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
     /**
@@ -414,17 +397,16 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param userJid
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean unblockUser(DomainBareJid mucLightService, Jid userJid)
+    public void unblockUser(DomainBareJid mucLightService, Jid userJid)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> users = new HashMap<>();
         users.put(userJid, true);
-        return sendUnblockUsers(mucLightService, users);
+        sendUnblockUsers(mucLightService, users);
     }
 
     /**
@@ -432,31 +414,26 @@ public final class MultiUserChatLightManager extends Manager {
      * 
      * @param mucLightService
      * @param usersJids
-     * @return true if it was successfully blocked
      * @throws NoResponseException
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public boolean unblockUsers(DomainBareJid mucLightService, List<Jid> usersJids)
+    public void unblockUsers(DomainBareJid mucLightService, List<Jid> usersJids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         HashMap<Jid, Boolean> users = new HashMap<>();
         for (Jid jid : usersJids) {
             users.put(jid, true);
         }
-        return sendUnblockUsers(mucLightService, users);
+        sendUnblockUsers(mucLightService, users);
     }
 
-    private boolean sendUnblockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
+    private void sendUnblockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
-        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(true, false, null, users);
+        MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
+        mucLightBlockingIQ.setType(Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-
-        StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
-        IQ responseIq = connection().createPacketCollectorAndSend(responseFilter, mucLightBlockingIQ)
-                .nextResultOrThrow();
-
-        return responseIq.getType().equals(Type.result);
+        connection().createPacketCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
 
 }

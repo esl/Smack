@@ -44,7 +44,7 @@ public class MUCLightDestroyIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.rightAngleBracket();
+        xml.setEmptyElement();
         return xml;
     }
 
