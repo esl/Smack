@@ -18,7 +18,7 @@
  * Classes and Interfaces that implement Multi-User Chat Light (MUC Light).
  * 
  * @see <a href=
- *      "https://s3.amazonaws.com/uploads.hipchat.com/15025/1268415/d9ByVbihpLmzxBI/XEP-xxxx.Multi.User.Chat.Light.pdf">
+ *      "http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html">
  *      XEP-xxxx: Multi-User Chat Light</a>
  * 
  */

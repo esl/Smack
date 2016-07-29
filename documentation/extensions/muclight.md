@@ -22,11 +22,12 @@ Its feature set is a response to mobile XMPP applications needs and specific env
   * Send message to a room
   * Manage blocking list
 
-**XEP related:** [XEP-xxxx](https://s3.amazonaws.com/uploads.hipchat.com/15025/1268415/d9ByVbihpLmzxBI/XEP-xxxx.Multi.User.Chat.Light.pdf)
+**XEP related:** [XEP-xxxx](http://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html)
 
 
 Obtain the MUC Light Manager
 ----------------------------
+
 ```
 MultiUserChatLightManager multiUserChatLightManager = MultiUserChatLightManager.getInstanceFor(connection);
 ```
