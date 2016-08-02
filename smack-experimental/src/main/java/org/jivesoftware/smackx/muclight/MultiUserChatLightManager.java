@@ -99,29 +99,6 @@ public final class MultiUserChatLightManager extends Manager {
     }
 
     /**
-     * Returns true if the MUC Light service is enabled.
-     *
-     * @param mucLightService
-     * @return a boolean indicating if the MUC Light service is enabled
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     */
-    public boolean isServiceEnabled(DomainBareJid mucLightService)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        DiscoverItems discoverItems = ServiceDiscoveryManager.getInstanceFor(connection())
-                .discoverItems(connection().getServiceName());
-        boolean found = false;
-        for (DiscoverItems.Item item : discoverItems.getItems()) {
-            if (item.getEntityID().equals(mucLightService)) {
-                found = true;
-            }
-        }
-        return found;
-    }
-
-    /**
      * Returns true if Multi-User Chat Light feature is supported by the server.
      *
      * @param mucLightService
@@ -131,7 +108,7 @@ public final class MultiUserChatLightManager extends Manager {
      * @throws NoResponseException
      * @throws InterruptedException
      */
-    public boolean isFeatureSupportedByServer(DomainBareJid mucLightService)
+    public boolean isFeatureSupported(DomainBareJid mucLightService)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).discoverInfo(mucLightService)
                 .containsFeature(MultiUserChatLight.NAMESPACE);
@@ -170,7 +147,7 @@ public final class MultiUserChatLightManager extends Manager {
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    public List<DomainBareJid> getXMPPServiceDomains()
+    public List<DomainBareJid> getLocalServices()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         return sdm.findServices(MultiUserChatLight.NAMESPACE, false, false);

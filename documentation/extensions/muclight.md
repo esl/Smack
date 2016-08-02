@@ -227,24 +227,17 @@ if (message.hasExtension(MUCLightElements.AffiliationsChangeExtension.ELEMENT, M
 Discover MUC Light support
 --------------------------
 
-**Check if service is enabled**
-
-```
-  boolean enabled = multiUserChatLightManager.isServiceEnabled(mucLightService);
-```
-*mucLightService* is a `DomainBareJid`
-
 **Check if MUC Light feature is supported by the server**
 
 ```
-boolean isSupported = multiUserChatLightManager.isFeatureSupportedByServer(mucLightService);
+boolean isSupported = multiUserChatLightManager.isFeatureSupported(mucLightService);
 ```
 *mucLightService* is a `DomainBareJid`
 
-**Get MUC Light service domains**
+**Get MUC Light services domains**
 
 ```
-List<DomainBareJid> domains = multiUserChatLightManager.getXMPPServiceDomains();
+List<DomainBareJid> domains = multiUserChatLightManager.getLocalServices();
 ```
 
 
