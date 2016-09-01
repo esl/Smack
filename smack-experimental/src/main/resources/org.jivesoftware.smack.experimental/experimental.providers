@@ -198,5 +198,5 @@
       <namespace>urn:xmpp:iot:control</namespace>
       <className>org.jivesoftware.smackx.iot.control.provider.IoTSetResponseProvider</className>
     </iqProvider>
-
+    
 </smackProviders>

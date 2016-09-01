@@ -69,6 +69,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Last Message Correction                     | [XEP-0308](http://xmpp.org/extensions/xep-0308.html) | Provides a method for indicating that a message is a correction of the last sent message. |
 | [Group Chat Invitations](invitation.md)   | n/a                                                      | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)          | n/a                                                      | TODO |
+| [Blocking Command](blockingcommand.md)      | [XEP-0191](http://xmpp.org/extensions/xep-0191.html) | Communications blocking that is intended to be simpler than privacy lists (XEP-0016). |
 
 
 Experimental Smack Extensions and currently supported XEPs of smack-experimental
