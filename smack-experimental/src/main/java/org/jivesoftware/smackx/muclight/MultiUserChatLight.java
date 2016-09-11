@@ -105,6 +105,7 @@ public class MultiUserChatLight {
             }
         };
 
+        connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
     }
 
     /**
@@ -262,7 +263,6 @@ public class MultiUserChatLight {
             throws Exception {
         MUCLightCreateIQ createMUCLightIQ = new MUCLightCreateIQ(room, roomName, occupants);
 
-        connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
         messageCollector = connection.createPacketCollector(fromRoomGroupchatFilter);
 
         try {
