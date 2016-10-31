@@ -90,7 +90,7 @@ public class BoBExtension extends XHTMLExtension {
     }
 
     public static BoBExtension from(Message message) {
-        return (BoBExtension) message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(ELEMENT, NAMESPACE);
     }
 
 }

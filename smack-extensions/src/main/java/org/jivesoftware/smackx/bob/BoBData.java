@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.bob;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Bits of Binary data class.
  * 
@@ -25,9 +27,9 @@ package org.jivesoftware.smackx.bob;
  */
 public class BoBData {
 
-    private long maxAge;
-    private String type;
-    private byte[] content;
+    private final long maxAge;
+    private final String type;
+    private final byte[] content;
 
     /**
      * BoB data constructor.
@@ -67,6 +69,19 @@ public class BoBData {
      */
     public byte[] getContent() {
         return content;
+    }
+
+    /**
+     * Get the content in a String.
+     * 
+     * @return the content in a String
+     */
+    public String getStringContent() {
+        try {
+            return new String(content, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("UTF-8 is not supported.");
+        }
     }
 
 }

@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.bob.element;
 
-import java.io.UnsupportedEncodingException;
-
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
@@ -42,8 +40,8 @@ public class BoBIQ extends IQ {
      */
     public static final String NAMESPACE = BoBManager.NAMESPACE;
 
-    private BoBHash bobHash;
-    private BoBData bobData;
+    private final BoBHash bobHash;
+    private final BoBData bobData;
 
     /**
      * Bits of Binary IQ constructor.
@@ -92,12 +90,7 @@ public class BoBIQ extends IQ {
             xml.attribute("max-age", String.valueOf(bobData.getMaxAge()));
             xml.attribute("type", bobData.getType());
             xml.rightAngleBracket();
-
-            try {
-                xml.escape(new String(bobData.getContent(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-            }
-
+            xml.escape(bobData.getStringContent());
         } else {
             xml.setEmptyElement();
         }

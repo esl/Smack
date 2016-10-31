@@ -73,6 +73,8 @@ public final class BoBManager extends Manager {
 
     private BoBManager(XMPPConnection connection) {
         super(connection);
+        ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+        serviceDiscoveryManager.addFeature(NAMESPACE);
     }
 
     /**

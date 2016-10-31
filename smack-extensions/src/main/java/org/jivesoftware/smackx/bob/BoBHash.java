@@ -25,8 +25,8 @@ package org.jivesoftware.smackx.bob;
  */
 public class BoBHash {
 
-    private String hash;
-    private String hashType;
+    private final String hash;
+    private final String hashType;
 
     /**
      * BoB hash constructor.
