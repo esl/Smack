@@ -31,9 +31,9 @@ import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
  */
 public class BoBExtension extends XHTMLExtension {
 
-    private BoBHash bobHash;
-    private String alt;
-    private String paragraph;
+    private final BoBHash bobHash;
+    private final String alt;
+    private final String paragraph;
 
     /**
      * Bits of Binary extension constructor.
