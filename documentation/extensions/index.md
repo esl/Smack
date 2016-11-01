@@ -15,6 +15,8 @@ Currently supported XEPs of Smack (all subprojects)
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | Nonzas  | [XEP-0360](http://xmpp.org/extensions/xep-0360.html) | Defines the term "Nonza", describing every top level stream element that is not a Stanza.                                         |
+| [Token-based reconnection](tokenreconnection.md)  | [XEP-xxxx](http://www.xmpp.org/extensions/inbox/token-reconnection.html) | Defines a token-based session authentication mechanism.                                         |
+
 
 Currently supported XEPs of smack-tcp
 -------------------------------------
@@ -67,6 +69,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Delayed Delivery                            | [XEP-0203](http://xmpp.org/extensions/xep-0203.html) | Extension for communicating the fact that an XML stanza has been delivered with a delay. |
 | XMPP Over BOSH                              | [XEP-0206](http://xmpp.org/extensions/xep-0206.html) | Use Bidirectional-streams Over Synchronous HTTP (BOSH) to transport XMPP stanzas. |
 | Attention                                   | [XEP-0224](http://xmpp.org/extensions/xep-0224.html) | Getting attention of another user. |
+| Bits of Binary                              | [XEP-0231](http://xmpp.org/extensions/xep-0231.html) | Including or referring to small bits of binary data in an XML stanza. |
 | Last Message Correction                     | [XEP-0308](http://xmpp.org/extensions/xep-0308.html) | Provides a method for indicating that a message is a correction of the last sent message. |
 | [Group Chat Invitations](invitation.md)   | n/a                                                      | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)          | n/a                                                      | TODO |
@@ -83,6 +86,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Internet of Things - Provisioning](iot.md) | [XEP-0324](http://xmpp.org/extensions/xep-0324.html) | Provisioning, access rights and user priviliges for the Internet of Things. |
 | [Internet of Things - Control](iot.md)      | [XEP-0325](http://xmpp.org/extensions/xep-0325.html) | Describes how to control devices or actuators in an XMPP-based sensor netowrk. |
 | [HTTP over XMPP transport](hoxt.md)         | [XEP-0332](http://xmpp.org/extensions/xep-0332.html) | Allows to transport HTTP communication over XMPP peer-to-peer networks. |
+| Chat Markers         			  			  | [XEP-0333](http://xmpp.org/extensions/xep-0333.html) | A solution of marking the last received, displayed and acknowledged message in a chat. |
 | JSON Containers                             | [XEP-0335](http://xmpp.org/extensions/xep-0335.html) | Encapsulation of JSON data within XMPP Stanzas. |
 | [Internet of Things - Discovery](iot.md)    | [XEP-0347](http://xmpp.org/extensions/xep-0347.html) | Describes how Things can be installed and discovered by their owners. |
 | Client State Indication                     | [XEP-0352](http://xmpp.org/extensions/xep-0352.html) | A way for the client to indicate its active/inactive state. |
