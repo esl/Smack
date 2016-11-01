@@ -16,37 +16,93 @@
  */
 package org.jivesoftware.smack.tcp;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.reflect.Constructor;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
+import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.SynchronizationPoint;
-import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.compress.packet.Compressed;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
+import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.XMPPError;
+import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
@@ -67,74 +123,22 @@ import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
 import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
 import org.jivesoftware.smack.sm.predicates.Predicate;
 import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
-import org.jivesoftware.smack.packet.Nonza;
-import org.jivesoftware.smack.packet.XMPPError;
-import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.dns.SmackDaneProvider;
+import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Constructor;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Provider;
-import java.security.Security;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Creates a socket connection to an XMPP server. This is the default connection
@@ -380,6 +384,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // Authenticate using SASL
         saslAuthentication.authenticate(username, password, config.getAuthzid());
 
+        afterAuth(resource);
+    }
+
+    private void afterAuth(Resourcepart resource) throws NotConnectedException, NoResponseException, SmackException,
+            InterruptedException, XMPPErrorException, XMPPException {
         // If compression is enabled then request the server to use stream compression. XEP-170
         // recommends to perform stream compression before resource binding.
         maybeEnableCompression();
@@ -436,6 +445,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         afterSuccessfulLogin(false);
+    }
+
+    @Override
+    protected void loginInternal(String token, Resourcepart resource)
+            throws XMPPException, SmackException, IOException, InterruptedException {
+        // Authenticate using SASL
+        saslAuthentication.authenticate(token);
+
+        afterAuth(resource);
     }
 
     @Override
@@ -559,20 +577,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             String host = hostAddress.getFQDN();
             int port = hostAddress.getPort();
             if (proxyInfo == null) {
-                try {
-                    inetAddresses = Arrays.asList(InetAddress.getAllByName(host)).iterator();
-                    if (!inetAddresses.hasNext()) {
-                        // This should not happen
-                        LOGGER.warning("InetAddress.getAllByName() returned empty result array.");
-                        throw new UnknownHostException(host);
-                    }
-                } catch (UnknownHostException e) {
-                    hostAddress.setException(e);
-                    // TODO: Change to emptyIterator() once Smack's minimum Android SDK level is >= 19.
-                    List<InetAddress> emptyInetAddresses = Collections.emptyList();
-                    inetAddresses = emptyInetAddresses.iterator();
-                    continue;
-                }
+                inetAddresses = hostAddress.getInetAddresses().iterator();
+                assert(inetAddresses.hasNext());
+
                 innerloop: while (inetAddresses.hasNext()) {
                     // Create a *new* Socket before every connection attempt, i.e. connect() call, since Sockets are not
                     // re-usable after a failed connection attempt. See also SMACK-724.
@@ -689,6 +696,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         KeyStore ks = null;
         KeyManager[] kms = null;
         PasswordCallback pcb = null;
+        SmackDaneVerifier daneVerifier = null;
+
+        if (config.getDnssecMode() == DnssecMode.needsDnssecAndDane) {
+            SmackDaneProvider daneProvider = DNSUtil.getDaneProvider();
+            if (daneProvider == null) {
+                throw new UnsupportedOperationException("DANE enabled but no SmackDaneProvider configured");
+            }
+            daneVerifier = daneProvider.newInstance();
+            if (daneVerifier == null) {
+                throw new IllegalStateException("DANE requested but DANE provider did not return a DANE verifier");
+            }
+        }
 
         if (context == null) {
             final String keyStoreType = config.getKeystoreType();
@@ -753,7 +772,20 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
             // If the user didn't specify a SSLContext, use the default one
             context = SSLContext.getInstance("TLS");
-            context.init(kms, null, new java.security.SecureRandom());
+
+            final SecureRandom secureRandom = new java.security.SecureRandom();
+            X509TrustManager customTrustManager = config.getCustomX509TrustManager();
+
+            if (daneVerifier != null) {
+                // User requested DANE verification.
+                daneVerifier.init(context, kms, customTrustManager, secureRandom);
+            } else {
+                TrustManager[] customTrustManagers = null;
+                if (customTrustManager != null) {
+                    customTrustManagers = new TrustManager[] { customTrustManager };
+                }
+                context.init(kms, customTrustManagers, secureRandom);
+            }
         }
 
         Socket plain = socket;
@@ -772,6 +804,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
         // Proceed to do the handshake
         sslSocket.startHandshake();
+
+        if (daneVerifier != null) {
+            daneVerifier.finish(sslSocket);
+        }
 
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
         if (verifier == null) {

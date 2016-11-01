@@ -15,6 +15,8 @@ Currently supported XEPs of Smack (all subprojects)
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | Nonzas  | [XEP-0360](http://xmpp.org/extensions/xep-0360.html) | Defines the term "Nonza", describing every top level stream element that is not a Stanza.                                         |
+| [Token-based reconnection](tokenreconnection.md)  | [XEP-xxxx](http://www.xmpp.org/extensions/inbox/token-reconnection.html) | Defines a token-based session authentication mechanism.                                         |
+
 
 Currently supported XEPs of smack-tcp
 -------------------------------------
@@ -77,7 +79,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| Message Carbons                             | [XEP-0280](http://xmpp.org/extensions/xep-0280.html) | Keep all IM clients for a user engaged in a conversation, by carbon-copy outbound messages to all interested resources.
+| Message Carbons                             | [XEP-0280](http://xmpp.org/extensions/xep-0280.html) | Keep all IM clients for a user engaged in a conversation, by carbon-copy outbound messages to all interested resources. |
 | [Message Archive Management](mam.md)        | [XEP-0313](http://xmpp.org/extensions/xep-0313.html) | Query and control an archive of messages stored on a server. |
 | [Internet of Things - Sensor Data](iot.md)  | [XEP-0323](http://xmpp.org/extensions/xep-0323.html) | Sensor data interchange over XMPP. |
 | [Internet of Things - Provisioning](iot.md) | [XEP-0324](http://xmpp.org/extensions/xep-0324.html) | Provisioning, access rights and user priviliges for the Internet of Things. |
@@ -98,5 +100,4 @@ If a XEP becomes 'Deprecated' or 'Obsolete' the code will be moved to the *smack
 | Name                                        | XEP                                                      | Description |
 |---------------------------------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | [Message Events](messageevents.md)        | [XEP-0022](http://xmpp.org/extensions/xep-0022.html) | Requests and responds to message events. |
-
 | [Roster Item Exchange](rosterexchange.md) | [XEP-0093](http://xmpp.org/extensions/xep-0093.html) | Allows roster data to be shared between users. |
