@@ -87,7 +87,7 @@ public class ChatMarkersElements {
          */
         public static final String ELEMENT = "received";
 
-        private String id;
+        private final String id;
 
         public ReceivedExtension(String id) {
             this.id = id;
@@ -140,7 +140,7 @@ public class ChatMarkersElements {
          */
         public static final String ELEMENT = "displayed";
 
-        private String id;
+        private final String id;
 
         public DisplayedExtension(String id) {
             this.id = id;
@@ -193,7 +193,7 @@ public class ChatMarkersElements {
          */
         public static final String ELEMENT = "acknowledged";
 
-        private String id;
+        private final String id;
 
         public AcknowledgedExtension(String id) {
             this.id = id;

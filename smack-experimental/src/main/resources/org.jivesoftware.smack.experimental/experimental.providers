@@ -204,6 +204,13 @@
       <className>org.jivesoftware.smackx.iot.control.provider.IoTSetResponseProvider</className>
     </iqProvider>
 
+    <!-- XEP-0357 Push Notifications -->
+    <extensionProvider>
+        <elementName>pubsub</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.push_notifications.provider.RemoteDisablingProvider</className>
+    </extensionProvider>
+
     <!-- XEP-0333: Chat Markers -->
     <extensionProvider>
       <elementName>markable</elementName>
@@ -225,12 +232,5 @@
       <namespace>urn:xmpp:chat-markers:0</namespace>
       <className>org.jivesoftware.smackx.chat_markers.provider.AcknowledgedProvider</className>
     </extensionProvider>
-
-
-    <!-- XEP-0357 Push Notifications -->
-    <extensionProvider>
-        <elementName>pubsub</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.push_notifications.provider.RemoteDisablingProvider</className>
-    </extensionProvider>
+    
 </smackProviders>

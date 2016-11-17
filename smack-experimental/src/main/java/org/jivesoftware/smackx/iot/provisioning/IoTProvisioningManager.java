@@ -122,7 +122,7 @@ public final class IoTProvisioningManager extends Manager {
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(Stanza stanza) throws NotConnectedException, InterruptedException {
-                if (!isFromProvisioningService(stanza)) {
+                if (!isFromProvisioningService(stanza, true)) {
                     return;
                 }
 
@@ -142,7 +142,9 @@ public final class IoTProvisioningManager extends Manager {
             }
         }, UNFRIEND_MESSAGE);
 
-        // Stanza listener for XEP-0324 § 3.2.4.
+        // Stanza listener for XEP-0324 § 3.2.4 "Recommending Friendships".
+        // Also includes business logic for thing-to-thing friendship recommendations, which is not
+        // (yet) part of the XEP.
         connection.addAsyncStanzaListener(new StanzaListener() {
             @Override
             public void processPacket(final Stanza stanza) throws NotConnectedException, InterruptedException {
@@ -150,7 +152,7 @@ public final class IoTProvisioningManager extends Manager {
                 final Friend friend = Friend.from(friendMessage);
                 final BareJid friendJid = friend.getFriend();
 
-                if (isFromProvisioningService(friendMessage)) {
+                if (isFromProvisioningService(friendMessage, false)) {
                     // We received a recommendation from a provisioning server.
                     // Notify the recommended friend that we will now accept his
                     // friendship requests.
@@ -163,17 +165,23 @@ public final class IoTProvisioningManager extends Manager {
                     // tried to become friends with. If this is the case, then
                     // thing is likely telling us that we can become now
                     // friends.
-                    Jid from = friendMessage.getFrom();
-                    if (!friendshipDeniedCache.containsKey(from)) {
+                    BareJid bareFrom = friendMessage.getFrom().asBareJid();
+                    if (!friendshipDeniedCache.containsKey(bareFrom)) {
+                        LOGGER.log(Level.WARNING, "Ignoring friendship recommendation "
+                                        + friendMessage
+                                        + " because friendship to this JID was not previously denied.");
                         return;
                     }
 
-                    BareJid bareFrom = from.asBareJid();
                     // Sanity check: If a thing recommends us itself as friend,
                     // which should be the case once we reach this code, then
                     // the bare 'from' JID should be equals to the JID of the
                     // recommended friend.
                     if (!bareFrom.equals(friendJid)) {
+                        LOGGER.log(Level.WARNING,
+                                        "Ignoring friendship recommendation " + friendMessage
+                                                        + " because it does not recommend itself, but "
+                                                        + friendJid + '.');
                         return;
                     }
 
@@ -187,7 +195,7 @@ public final class IoTProvisioningManager extends Manager {
                         new AbstractIqRequestHandler(ClearCache.ELEMENT, ClearCache.NAMESPACE, Type.set, Mode.async) {
                             @Override
                             public IQ handleIQRequest(IQ iqRequest) {
-                                if (!isFromProvisioningService(iqRequest)) {
+                                if (!isFromProvisioningService(iqRequest, true)) {
                                     return null;
                                 }
 
@@ -342,6 +350,13 @@ public final class IoTProvisioningManager extends Manager {
         return isFriend;
     }
 
+    public boolean iAmFriendOf(BareJid otherJid) {
+        RosterEntry entry = roster.getEntry(otherJid);
+        if (entry == null) return false;
+
+        return entry.canSeeHisPresence();
+    }
+
     public void sendFriendshipRequest(BareJid bareJid) throws NotConnectedException, InterruptedException {
         Presence presence = new Presence(Presence.Type.subscribe);
         presence.setTo(bareJid);
@@ -352,19 +367,17 @@ public final class IoTProvisioningManager extends Manager {
     }
 
     public void sendFriendshipRequestIfRequired(BareJid jid) throws NotConnectedException, InterruptedException {
-        RosterEntry entry = roster.getEntry(jid);
-        if (entry != null && entry.canSeeHisPresence()) {
-            return;
-        }
+        if (iAmFriendOf(jid)) return;
+
         sendFriendshipRequest(jid);
     }
 
-    public boolean isBefriended(Jid friendInQuestion) {
+    public boolean isMyFriend(Jid friendInQuestion) {
         return roster.isSubscribedToMyPresence(friendInQuestion);
     }
 
     public void unfriend(Jid friend) throws NotConnectedException, InterruptedException {
-        if (isBefriended(friend)) {
+        if (isMyFriend(friend)) {
             Presence presence = new Presence(Presence.Type.unsubscribed);
             presence.setTo(friend);
             connection().sendStanza(presence);
@@ -387,7 +400,7 @@ public final class IoTProvisioningManager extends Manager {
         return wasUnfriendedListeners.remove(wasUnfriendedListener);
     }
 
-    private boolean isFromProvisioningService(Stanza stanza) {
+    private boolean isFromProvisioningService(Stanza stanza, boolean log) {
         Jid provisioningServer;
         try {
             provisioningServer = getConfiguredProvisioningServer();
@@ -397,13 +410,18 @@ public final class IoTProvisioningManager extends Manager {
             return false;
         }
         if (provisioningServer == null) {
-            LOGGER.warning("Ignoring request '" + stanza
-                            + "' because no provisioning server configured.");
+            if (log) {
+                LOGGER.warning("Ignoring request '" + stanza
+                                + "' because no provisioning server configured.");
+            }
             return false;
         }
         if (!provisioningServer.equals(stanza.getFrom())) {
-            LOGGER.warning("Ignoring  request '" + stanza + "' because not from provising server '"
-                            + provisioningServer + "'.");
+            if (log) {
+                LOGGER.warning("Ignoring  request '" + stanza
+                                + "' because not from provising server '" + provisioningServer
+                                + "'.");
+            }
             return false;
         }
         return true;
