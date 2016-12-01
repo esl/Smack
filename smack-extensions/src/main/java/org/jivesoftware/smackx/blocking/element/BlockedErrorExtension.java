@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.blocking.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.blocking.BlockingCommandManager;
 
@@ -51,11 +52,22 @@ public class BlockedErrorExtension implements ExtensionElement {
     }
 
     public static BlockedErrorExtension from(Message message) {
-        return message.getError().getExtension(ELEMENT, NAMESPACE);
+        XMPPError error = message.getError();
+        if (error == null) {
+            return null;
+        }
+        return error.getExtension(ELEMENT, NAMESPACE);
     }
 
+    /**
+     * Check if a Blocked Error Extension is inside a message.
+     * 
+     * @param message
+     * @return true if the message contains a Blocked Error Extension, false if
+     *         not
+     */
     public static boolean isInside(Message message) {
-        return message.getError().getExtension(ELEMENT, NAMESPACE) != null;
+        return from(message) != null;
     }
 
 }

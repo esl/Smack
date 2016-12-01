@@ -24,24 +24,31 @@ import org.junit.Test;
 
 public class BlockedErrorExtensionTest {
 
+    String messageWithoutError = "<message from='gardano@erlang-solutions.com' "
+            + "to='griveroa-inaka@erlang-solutions.com/9b7b3fce28742983' "
+            + "type='normal' xml:lang='en' id='5x41G-120'>" + "</message>";
+
     String messageWithError = "<message from='gardano@erlang-solutions.com' "
             + "to='griveroa-inaka@erlang-solutions.com/9b7b3fce28742983' "
-            + "type='error' xml:lang='en' id='5x41G-120'>" + "<error code='406' type='cancel'>"
+            + "type='error' xml:lang='en' id='5x41G-121'>" + "<error code='406' type='cancel'>"
             + "<not-acceptable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" + "</error>" + "</message>";
 
     String messageWithBlockedError = "<message from='gardano@erlang-solutions.com' "
             + "to='griveroa-inaka@erlang-solutions.com/9b7b3fce28742983' "
-            + "type='error' xml:lang='en' id='5x41G-120'>" + "<error code='406' type='cancel'>"
+            + "type='error' xml:lang='en' id='5x41G-122'>" + "<error code='406' type='cancel'>"
             + "<blocked xmlns='urn:xmpp:blocking:errors'/>"
             + "<not-acceptable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" + "</error>" + "</message>";
 
     @Test
     public void checkErrorHasBlockedExtension() throws Exception {
-        Message message1 = (Message) PacketParserUtils.parseStanza(messageWithError);
+        Message message1 = (Message) PacketParserUtils.parseStanza(messageWithoutError);
         Assert.assertFalse(BlockedErrorExtension.isInside(message1));
 
-        Message message2 = (Message) PacketParserUtils.parseStanza(messageWithBlockedError);
-        Assert.assertTrue(BlockedErrorExtension.isInside(message2));
+        Message message2 = (Message) PacketParserUtils.parseStanza(messageWithError);
+        Assert.assertFalse(BlockedErrorExtension.isInside(message2));
+
+        Message message3 = (Message) PacketParserUtils.parseStanza(messageWithBlockedError);
+        Assert.assertTrue(BlockedErrorExtension.isInside(message3));
     }
 
 }
