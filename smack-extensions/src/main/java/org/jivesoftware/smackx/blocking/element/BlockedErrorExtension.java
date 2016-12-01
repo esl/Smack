@@ -60,10 +60,13 @@ public class BlockedErrorExtension implements ExtensionElement {
     }
 
     /**
-     * Check if a Blocked Error Extension is inside a message.
+     * 
+     * Check if a message contains a BlockedErrorExtension, which means that a
+     * message was blocked because the JID blocked the sender, and that was
+     * reflected back as an error message.
      * 
      * @param message
-     * @return true if the message contains a Blocked Error Extension, false if
+     * @return true if the message contains a BlockedErrorExtension, false if
      *         not
      */
     public static boolean isInside(Message message) {
