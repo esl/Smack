@@ -97,7 +97,11 @@ public final class BlockingCommandManager extends Manager {
                         }
 
                         List<Jid> blockedJids = blockContactIQ.getJids();
-                        blockListCached.addAll(blockedJids);
+
+                        List<Jid> newBlockListCached = new ArrayList<>();
+                        newBlockListCached.addAll(blockedJids);
+                        newBlockListCached.addAll(blockListCached);
+                        blockListCached = newBlockListCached;
 
                         return IQ.createResultIQ(blockContactIQ);
                     }
@@ -163,13 +167,11 @@ public final class BlockingCommandManager extends Manager {
     public List<Jid> getBlockList()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
-        if (blockListCached != null) {
-            return Collections.unmodifiableList(blockListCached);
+        if (blockListCached == null) {
+            BlockListIQ blockListIQ = new BlockListIQ();
+            BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
+            blockListCached = blockListIQResult.getJids();
         }
-
-        BlockListIQ blockListIQ = new BlockListIQ();
-        BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
-        blockListCached = blockListIQResult.getJids();
 
         return Collections.unmodifiableList(blockListCached);
     }
