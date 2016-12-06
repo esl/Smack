@@ -97,11 +97,7 @@ public final class BlockingCommandManager extends Manager {
                         }
 
                         List<Jid> blockedJids = blockContactIQ.getJids();
-
-                        List<Jid> newBlockListCached = new ArrayList<>();
-                        newBlockListCached.addAll(blockedJids);
-                        newBlockListCached.addAll(blockListCached);
-                        blockListCached = newBlockListCached;
+                        blockListCached.addAll(blockedJids);
 
                         return IQ.createResultIQ(blockContactIQ);
                     }
@@ -170,7 +166,7 @@ public final class BlockingCommandManager extends Manager {
         if (blockListCached == null) {
             BlockListIQ blockListIQ = new BlockListIQ();
             BlockListIQ blockListIQResult = connection().createPacketCollectorAndSend(blockListIQ).nextResultOrThrow();
-            blockListCached = blockListIQResult.getJids();
+            blockListCached = blockListIQResult.getBlockedJidsCopy();
         }
 
         return Collections.unmodifiableList(blockListCached);
