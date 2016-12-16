@@ -382,6 +382,23 @@ public final class MamManager extends Manager {
     }
 
     /**
+     * Obtain the most recent page of a chat.
+     *
+     * @param chatJid
+     * @param max
+     * @return the MAM query result
+     * @throws XMPPErrorException
+     * @throws NotLoggedInException
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     * @throws NoResponseException
+     */
+    public MamQueryResult mostRecentPage(Jid chatJid, int max) throws XMPPErrorException, NotLoggedInException,
+            NotConnectedException, InterruptedException, NoResponseException {
+        return pageBefore(chatJid, "", max);
+    }
+
+    /**
      * Get the form fields supported by the server.
      * 
      * @return the list of form fields.
