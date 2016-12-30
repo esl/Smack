@@ -29,12 +29,12 @@ public class DefaultBoBSaverManager implements BoBSaverManager {
     HashMap<BoBHash, BoBData> bobs = new HashMap<>();
 
     @Override
-    public void addBob(BoBHash bobHash, BoBData boBData) {
-        bobs.put(bobHash, boBData);
+    public void addBoB(BoBHash bobHash, BoBData bobData) {
+        bobs.put(bobHash, bobData);
     }
 
     @Override
-    public void removeBob(BoBHash bobHash) {
+    public void removeBoB(BoBHash bobHash) {
         bobs.remove(bobHash);
     }
 
