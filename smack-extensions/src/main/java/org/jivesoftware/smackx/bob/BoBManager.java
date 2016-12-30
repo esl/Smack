@@ -45,13 +45,13 @@ import org.jxmpp.jid.Jid;
 public final class BoBManager extends Manager {
 
     public static final String NAMESPACE = "urn:xmpp:bob";
-    public static BoBSaverManager bobSaveManager;
+    public static BoBSaverManager bobSaverManager;
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(XMPPConnection connection) {
-                getInstanceFor(connection, bobSaveManager);
+                getInstanceFor(connection, bobSaverManager);
             }
         });
     }
@@ -90,12 +90,11 @@ public final class BoBManager extends Manager {
                     public IQ handleIQRequest(IQ iqRequest) {
                         BoBIQ getBoBIQ = (BoBIQ) iqRequest;
 
-                        BoBData bobData = bobSaveManager.getBoB(getBoBIQ.getBoBHash());
+                        BoBData bobData = bobSaverManager.getBoB(getBoBIQ.getBoBHash());
                         BoBIQ responseBoBIQ = null;
                         try {
                             responseBoBIQ = responseBoB(getBoBIQ, bobData);
                         } catch (NotConnectedException | NotLoggedInException | InterruptedException e) {
-                            e.printStackTrace();
                         }
 
                         return responseBoBIQ;
@@ -107,7 +106,7 @@ public final class BoBManager extends Manager {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
                         BoBIQ resultBoBIQ = (BoBIQ) iqRequest;
-                        bobSaveManager.addBob(resultBoBIQ.getBoBHash(), resultBoBIQ.getBoBData());
+                        bobSaverManager.addBob(resultBoBIQ.getBoBHash(), resultBoBIQ.getBoBData());
                         return null;
                     }
                 });
