@@ -60,8 +60,9 @@ public final class BoBManager extends Manager {
 
     /**
      * Get the singleton instance of BoBManager.
-     *
+     * 
      * @param connection
+     * @param bobSaveManager
      * @return the instance of BoBManager
      */
     public static synchronized BoBManager getInstanceFor(XMPPConnection connection, BoBSaverManager bobSaveManager) {
@@ -149,15 +150,6 @@ public final class BoBManager extends Manager {
         return responseBoBIQ.getBoBData();
     }
 
-    /**
-     * Response BoB request.
-     * 
-     * @param requestBoBIQ
-     * @param bobData
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotLoggedInException
-     */
     private BoBIQ responseBoB(BoBIQ requestBoBIQ, BoBData bobData)
             throws NotConnectedException, InterruptedException, NotLoggedInException {
         BoBIQ responseBoBIQ = new BoBIQ(requestBoBIQ.getBoBHash(), bobData);
