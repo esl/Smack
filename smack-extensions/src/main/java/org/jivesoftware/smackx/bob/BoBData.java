@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.bob;
 
 import java.io.UnsupportedEncodingException;
 
+import org.jivesoftware.smack.util.stringencoder.Base64;
+
 /**
  * Bits of Binary data class.
  * 
@@ -72,13 +74,14 @@ public class BoBData {
     }
 
     /**
-     * Get the content in a String.
+     * Get the content in a Base64 encoded String.
      * 
-     * @return the content in a String
+     * @return the content in a Base64 encoded String
      */
-    public String getStringContent() {
+    public String getBase64Encoded() {
+        byte[] bytes = Base64.encode(content);
         try {
-            return new String(content, "UTF-8");
+            return new String(bytes, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("UTF-8 is not supported.");
         }
