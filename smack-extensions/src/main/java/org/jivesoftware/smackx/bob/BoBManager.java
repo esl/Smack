@@ -27,6 +27,9 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
+import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -42,12 +45,13 @@ import org.jxmpp.jid.Jid;
 public final class BoBManager extends Manager {
 
     public static final String NAMESPACE = "urn:xmpp:bob";
+    public static BoBSaverManager bobSaveManager;
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(XMPPConnection connection) {
-                getInstanceFor(connection);
+                getInstanceFor(connection, bobSaveManager);
             }
         });
     }
@@ -60,9 +64,12 @@ public final class BoBManager extends Manager {
      * @param connection
      * @return the instance of BoBManager
      */
-    public static synchronized BoBManager getInstanceFor(XMPPConnection connection) {
-        BoBManager bobManager = INSTANCES.get(connection);
+    public static synchronized BoBManager getInstanceFor(XMPPConnection connection, BoBSaverManager bobSaveManager) {
+        if (bobSaveManager == null) {
+            bobSaveManager = new DefaultBoBSaverManager();
+        }
 
+        BoBManager bobManager = INSTANCES.get(connection);
         if (bobManager == null) {
             bobManager = new BoBManager(connection);
             INSTANCES.put(connection, bobManager);
@@ -75,6 +82,34 @@ public final class BoBManager extends Manager {
         super(connection);
         ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         serviceDiscoveryManager.addFeature(NAMESPACE);
+
+        connection.registerIQRequestHandler(
+                new AbstractIqRequestHandler(BoBIQ.ELEMENT, BoBIQ.NAMESPACE, Type.get, Mode.sync) {
+                    @Override
+                    public IQ handleIQRequest(IQ iqRequest) {
+                        BoBIQ getBoBIQ = (BoBIQ) iqRequest;
+
+                        BoBData bobData = bobSaveManager.getBoB(getBoBIQ.getBoBHash());
+                        BoBIQ responseBoBIQ = null;
+                        try {
+                            responseBoBIQ = responseBoB(getBoBIQ, bobData);
+                        } catch (NotConnectedException | NotLoggedInException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        return responseBoBIQ;
+                    }
+                });
+
+        connection.registerIQRequestHandler(
+                new AbstractIqRequestHandler(BoBIQ.ELEMENT, BoBIQ.NAMESPACE, Type.result, Mode.sync) {
+                    @Override
+                    public IQ handleIQRequest(IQ iqRequest) {
+                        BoBIQ resultBoBIQ = (BoBIQ) iqRequest;
+                        bobSaveManager.addBob(resultBoBIQ.getBoBHash(), resultBoBIQ.getBoBData());
+                        return null;
+                    }
+                });
     }
 
     /**
@@ -123,14 +158,12 @@ public final class BoBManager extends Manager {
      * @throws InterruptedException
      * @throws NotLoggedInException
      */
-    public void responseBoB(BoBIQ requestBoBIQ, BoBData bobData)
+    private BoBIQ responseBoB(BoBIQ requestBoBIQ, BoBData bobData)
             throws NotConnectedException, InterruptedException, NotLoggedInException {
         BoBIQ responseBoBIQ = new BoBIQ(requestBoBIQ.getBoBHash(), bobData);
         responseBoBIQ.setType(Type.result);
         responseBoBIQ.setTo(requestBoBIQ.getFrom());
-
-        XMPPConnection connection = getAuthenticatedConnectionOrThrow();
-        connection.sendStanza(responseBoBIQ);
+        return responseBoBIQ;
     }
 
 }
