@@ -24,9 +24,9 @@ package org.jivesoftware.smackx.bob;
  */
 public interface BoBSaverManager {
 
-    public void addBob(BoBHash bobHash, BoBData boBData);
+    public void addBoB(BoBHash bobHash, BoBData bobData);
 
-    public void removeBob(BoBHash bobHash);
+    public void removeBoB(BoBHash bobHash);
 
     public BoBData getBoB(BoBHash bobHash);
 

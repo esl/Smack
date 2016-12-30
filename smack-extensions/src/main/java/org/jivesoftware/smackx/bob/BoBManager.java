@@ -62,12 +62,14 @@ public final class BoBManager extends Manager {
      * Get the singleton instance of BoBManager.
      * 
      * @param connection
-     * @param bobSaveManager
+     * @param saverManager
      * @return the instance of BoBManager
      */
-    public static synchronized BoBManager getInstanceFor(XMPPConnection connection, BoBSaverManager bobSaveManager) {
-        if (bobSaveManager == null) {
-            bobSaveManager = new DefaultBoBSaverManager();
+    public static synchronized BoBManager getInstanceFor(XMPPConnection connection, BoBSaverManager saverManager) {
+        if (saverManager == null) {
+            bobSaverManager = new DefaultBoBSaverManager();
+        } else {
+            bobSaverManager = saverManager;
         }
 
         BoBManager bobManager = INSTANCES.get(connection);
@@ -106,7 +108,7 @@ public final class BoBManager extends Manager {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
                         BoBIQ resultBoBIQ = (BoBIQ) iqRequest;
-                        bobSaverManager.addBob(resultBoBIQ.getBoBHash(), resultBoBIQ.getBoBData());
+                        bobSaverManager.addBoB(resultBoBIQ.getBoBHash(), resultBoBIQ.getBoBData());
                         return null;
                     }
                 });
