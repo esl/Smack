@@ -90,7 +90,7 @@ public class BoBIQ extends IQ {
             xml.attribute("max-age", String.valueOf(bobData.getMaxAge()));
             xml.attribute("type", bobData.getType());
             xml.rightAngleBracket();
-            xml.escape(bobData.getStringContent());
+            xml.escape(bobData.getBase64Encoded());
         } else {
             xml.setEmptyElement();
         }

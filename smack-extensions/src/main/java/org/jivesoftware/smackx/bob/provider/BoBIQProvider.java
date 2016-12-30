@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bob.provider;
 
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
@@ -50,14 +51,15 @@ public class BoBIQProvider extends IQProvider<BoBIQ> {
                 maxAge = Long.parseLong(maxAgeString);
             }
 
-            String data = null;
+            String base64EncodedData = null;
             try {
-                data = parser.nextText();
+                base64EncodedData = parser.nextText();
             } catch (Exception e) {
             }
 
-            if (data != null && dataType != null) {
-                bobData = new BoBData(maxAge, dataType, data.getBytes());
+            if (base64EncodedData != null && dataType != null) {
+                byte[] base64EncodedDataBytes = base64EncodedData.getBytes();
+                bobData = new BoBData(maxAge, dataType, Base64.decode(base64EncodedDataBytes));
             }
 
         }

@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bob;
 
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.bob.provider.BoBIQProvider;
@@ -25,19 +26,14 @@ import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 import org.xmlpull.v1.XmlPullParser;
 
-public class BoBIQTest {
+public class BoBIQTest extends SmackTestSuite {
 
     String sampleBoBIQRequest = "<iq to='ladymacbeth@shakespeare.lit/castle' id='sarasa' type='get'>"
             + "<data xmlns='urn:xmpp:bob' cid='sha1+8f35fef110ffc5df08d579a50083ff9308fb6242@bob.xmpp.org'/>" + "</iq>";
 
     String sampleBoBIQResponse = "<iq to='doctor@shakespeare.lit/pda' id='sarasa' type='result'>"
             + "<data xmlns='urn:xmpp:bob' cid='sha1+8f35fef110ffc5df08d579a50083ff9308fb6242@bob.xmpp.org' "
-            + "max-age='86400' type='image/png'>" + "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGP"
-            + "CxhBQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YGARc5KB0XV+IA"
-            + "AAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAF1J"
-            + "REFUGNO9zL0NglAAxPEfdLTs4BZM4DIO4C7OwQg2JoQ9LE1exdlYvBBeZ7jq"
-            + "ch9q1uH4TLzw4d6+ErXMMcXuHWxId3KOETnnXXV6MJpcq2MLaI97CER3N0vr4MkhoXe0rZigAAAABJRU5ErkJggg==" + "</data>"
-            + "</iq>";
+            + "max-age='86400' type='image/png'>" + "c2FyYXNhZGUyMzU0ajI=" + "</data>" + "</iq>";
 
     @Test
     public void checkBoBIQRequest() throws Exception {
@@ -65,20 +61,19 @@ public class BoBIQTest {
         bobIQ.setTo(JidCreate.from("doctor@shakespeare.lit/pda"));
         bobIQ.setType(Type.result);
 
-        String data = "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC"
-                + "xhBQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9YGARc5KB0XV+IA"
-                + "AAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAF1J"
-                + "REFUGNO9zL0NglAAxPEfdLTs4BZM4DIO4C7OwQg2JoQ9LE1exdlYvBBeZ7jq"
-                + "ch9q1uH4TLzw4d6+ErXMMcXuHWxId3KOETnnXXV6MJpcq2MLaI97CER3N0vr4MkhoXe0rZigAAAABJRU5ErkJggg==";
-
         BoBHash bobHash = new BoBHash("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
-        BoBData bobData = new BoBData(86400, "image/png", data.getBytes());
+        BoBData bobData = new BoBData(86400, "image/png", "sarasade2354j2".getBytes());
 
         BoBIQ createdBoBIQ = new BoBIQ(bobHash, bobData);
         createdBoBIQ.setStanzaId("sarasa");
         createdBoBIQ.setTo(JidCreate.from("doctor@shakespeare.lit/pda"));
         createdBoBIQ.setType(Type.result);
 
+        Assert.assertEquals(bobIQ.getBoBHash().getHash(), createdBoBIQ.getBoBHash().getHash());
+        Assert.assertEquals(bobIQ.getBoBHash().getHashType(), createdBoBIQ.getBoBHash().getHashType());
+        Assert.assertEquals(bobIQ.getBoBData().getMaxAge(), createdBoBIQ.getBoBData().getMaxAge());
+        Assert.assertEquals(bobIQ.getBoBData().getType(), createdBoBIQ.getBoBData().getType());
+        Assert.assertEquals(bobIQ.getBoBData().getBase64Encoded(), createdBoBIQ.getBoBData().getBase64Encoded());
         Assert.assertEquals(bobIQ.toXML().toString(), createdBoBIQ.toXML().toString());
     }
 
