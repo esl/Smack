@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016-2017 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.jivesoftware.smackx.bob;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -34,129 +37,145 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.jid.Jid;
+import org.jivesoftware.smack.util.SHA1;
+import org.jxmpp.util.cache.LruCache;
 
 /**
  * Bits of Binary manager class.
  * 
- * @author Fernando Ramirez
+ * @author Fernando Ramirez, Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
  *      Binary</a>
  */
 public final class BoBManager extends Manager {
 
-    public static final String NAMESPACE = "urn:xmpp:bob";
-    public static BoBSaverManager bobSaverManager;
+	public static final String NAMESPACE = "urn:xmpp:bob";
 
-    static {
-        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
-            @Override
-            public void connectionCreated(XMPPConnection connection) {
-                getInstanceFor(connection, bobSaverManager);
-            }
-        });
-    }
+	static {
+		XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+			@Override
+			public void connectionCreated(XMPPConnection connection) {
+				getInstanceFor(connection);
+			}
+		});
+	}
 
-    private static final Map<XMPPConnection, BoBManager> INSTANCES = new WeakHashMap<>();
+	private static final Map<XMPPConnection, BoBManager> INSTANCES = new WeakHashMap<>();
 
-    /**
-     * Get the singleton instance of BoBManager.
-     * 
-     * @param connection
-     * @param saverManager
-     * @return the instance of BoBManager
-     */
-    public static synchronized BoBManager getInstanceFor(XMPPConnection connection, BoBSaverManager saverManager) {
-        if (saverManager == null) {
-            bobSaverManager = new DefaultBoBSaverManager();
-        } else {
-            bobSaverManager = saverManager;
-        }
+	/**
+	 * Get the singleton instance of BoBManager.
+	 * 
+	 * @param connection
+	 * @return the instance of BoBManager
+	 */
+	public static synchronized BoBManager getInstanceFor(XMPPConnection connection) {
+		BoBManager bobManager = INSTANCES.get(connection);
+		if (bobManager == null) {
+			bobManager = new BoBManager(connection);
+			INSTANCES.put(connection, bobManager);
+		}
 
-        BoBManager bobManager = INSTANCES.get(connection);
-        if (bobManager == null) {
-            bobManager = new BoBManager(connection);
-            INSTANCES.put(connection, bobManager);
-        }
+		return bobManager;
+	}
 
-        return bobManager;
-    }
+	private static final LruCache<BoBHash, BoBData> BOB_CACHE = new LruCache<>(128);
 
-    private BoBManager(XMPPConnection connection) {
-        super(connection);
-        ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
-        serviceDiscoveryManager.addFeature(NAMESPACE);
+	private final Map<BoBHash, BoBInfo> bobs = new ConcurrentHashMap<>();
 
-        connection.registerIQRequestHandler(
-                new AbstractIqRequestHandler(BoBIQ.ELEMENT, BoBIQ.NAMESPACE, Type.get, Mode.sync) {
-                    @Override
-                    public IQ handleIQRequest(IQ iqRequest) {
-                        BoBIQ getBoBIQ = (BoBIQ) iqRequest;
+	private BoBManager(XMPPConnection connection) {
+		super(connection);
+		ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+		serviceDiscoveryManager.addFeature(NAMESPACE);
 
-                        BoBData bobData = bobSaverManager.getBoB(getBoBIQ.getBoBHash());
-                        BoBIQ responseBoBIQ = null;
-                        try {
-                            responseBoBIQ = responseBoB(getBoBIQ, bobData);
-                        } catch (NotConnectedException | NotLoggedInException | InterruptedException e) {
-                        }
+		connection.registerIQRequestHandler(
+				new AbstractIqRequestHandler(BoBIQ.ELEMENT, BoBIQ.NAMESPACE, Type.get, Mode.async) {
+					@Override
+					public IQ handleIQRequest(IQ iqRequest) {
+						BoBIQ bobIQRequest = (BoBIQ) iqRequest;
 
-                        return responseBoBIQ;
-                    }
-                });
+						BoBInfo bobInfo = bobs.get(bobIQRequest.getBoBHash());
+						if (bobInfo == null) {
+							// TODO return item-not-found
+							return null;
+						}
 
-        connection.registerIQRequestHandler(
-                new AbstractIqRequestHandler(BoBIQ.ELEMENT, BoBIQ.NAMESPACE, Type.result, Mode.sync) {
-                    @Override
-                    public IQ handleIQRequest(IQ iqRequest) {
-                        BoBIQ resultBoBIQ = (BoBIQ) iqRequest;
-                        bobSaverManager.addBoB(resultBoBIQ.getBoBHash(), resultBoBIQ.getBoBData());
-                        return null;
-                    }
-                });
-    }
+						BoBData bobData = bobInfo.getData();
+						BoBIQ responseBoBIQ = new BoBIQ(bobIQRequest.getBoBHash(), bobData);
+						responseBoBIQ.setType(Type.result);
+						responseBoBIQ.setTo(bobIQRequest.getFrom());
+						return responseBoBIQ;
+					}
+				});
+	}
 
-    /**
-     * Returns true if Bits of Binary is supported by the server.
-     * 
-     * @return true if Bits of Binary is supported by the server.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     */
-    public boolean isSupportedByServer()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(NAMESPACE);
-    }
+	/**
+	 * Returns true if Bits of Binary is supported by the server.
+	 * 
+	 * @return true if Bits of Binary is supported by the server.
+	 * @throws NoResponseException
+	 * @throws XMPPErrorException
+	 * @throws NotConnectedException
+	 * @throws InterruptedException
+	 */
+	public boolean isSupportedByServer()
+			throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+		return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(NAMESPACE);
+	}
 
-    /**
-     * Request BoB data.
-     * 
-     * @param to
-     * @param bobHash
-     * @return the BoB data
-     * @throws NotLoggedInException
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     */
-    public BoBData requestBoB(Jid to, BoBHash bobHash) throws NotLoggedInException, NoResponseException,
-            XMPPErrorException, NotConnectedException, InterruptedException {
-        BoBIQ requestBoBIQ = new BoBIQ(bobHash);
-        requestBoBIQ.setType(Type.get);
-        requestBoBIQ.setTo(to);
+	/**
+	 * Request BoB data.
+	 * 
+	 * @param to
+	 * @param bobHash
+	 * @return the BoB data
+	 * @throws NotLoggedInException
+	 * @throws NoResponseException
+	 * @throws XMPPErrorException
+	 * @throws NotConnectedException
+	 * @throws InterruptedException
+	 */
+	public BoBData requestBoB(Jid to, BoBHash bobHash) throws NotLoggedInException, NoResponseException,
+			XMPPErrorException, NotConnectedException, InterruptedException {
+		BoBData bobData = BOB_CACHE.lookup(bobHash);
+		if (bobData != null) {
+			return bobData;
+		}
 
-        XMPPConnection connection = getAuthenticatedConnectionOrThrow();
-        BoBIQ responseBoBIQ = connection.createPacketCollectorAndSend(requestBoBIQ).nextResultOrThrow();
-        return responseBoBIQ.getBoBData();
-    }
+		BoBIQ requestBoBIQ = new BoBIQ(bobHash);
+		requestBoBIQ.setType(Type.get);
+		requestBoBIQ.setTo(to);
 
-    private BoBIQ responseBoB(BoBIQ requestBoBIQ, BoBData bobData)
-            throws NotConnectedException, InterruptedException, NotLoggedInException {
-        BoBIQ responseBoBIQ = new BoBIQ(requestBoBIQ.getBoBHash(), bobData);
-        responseBoBIQ.setType(Type.result);
-        responseBoBIQ.setTo(requestBoBIQ.getFrom());
-        return responseBoBIQ;
-    }
+		XMPPConnection connection = getAuthenticatedConnectionOrThrow();
+		BoBIQ responseBoBIQ = connection.createStanzaCollectorAndSend(requestBoBIQ).nextResultOrThrow();
 
+		bobData = responseBoBIQ.getBoBData();
+		BOB_CACHE.put(bobHash, bobData);
+
+		return bobData;
+	}
+
+	public BoBInfo addBoB(BoBData bobData) {
+		// We only support SHA-1 for now.
+		BoBHash bobHash = new BoBHash("sha1", SHA1.hex(bobData.getContent()));
+
+		Set<BoBHash> bobHashes = Collections.singleton(bobHash);
+		bobHashes = Collections.unmodifiableSet(bobHashes);
+
+		BoBInfo bobInfo = new BoBInfo(bobHashes, bobData);
+
+		bobs.put(bobHash, bobInfo);
+
+		return bobInfo;
+	}
+
+	public BoBInfo removeBoB(BoBHash bobHash) {
+		BoBInfo bobInfo = bobs.remove(bobHash);
+		if (bobInfo == null) {
+			return null;
+		}
+		for (BoBHash otherBobHash : bobInfo.getHashes()) {
+			bobs.remove(otherBobHash);
+		}
+		return bobInfo;
+	}
 }

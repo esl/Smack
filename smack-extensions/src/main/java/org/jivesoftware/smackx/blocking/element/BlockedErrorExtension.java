@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016-2017 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,46 +31,46 @@ import org.jivesoftware.smackx.blocking.BlockingCommandManager;
  */
 public class BlockedErrorExtension implements ExtensionElement {
 
-    public static final String ELEMENT = "blocked";
-    public static final String NAMESPACE = BlockingCommandManager.NAMESPACE + ":errors";
+	public static final String ELEMENT = "blocked";
+	public static final String NAMESPACE = BlockingCommandManager.NAMESPACE + ":errors";
 
-    @Override
-    public String getElementName() {
-        return ELEMENT;
-    }
+	@Override
+	public String getElementName() {
+		return ELEMENT;
+	}
 
-    @Override
-    public String getNamespace() {
-        return NAMESPACE;
-    }
+	@Override
+	public String getNamespace() {
+		return NAMESPACE;
+	}
 
-    @Override
-    public CharSequence toXML() {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.closeEmptyElement();
-        return xml;
-    }
+	@Override
+	public CharSequence toXML() {
+		XmlStringBuilder xml = new XmlStringBuilder(this);
+		xml.closeEmptyElement();
+		return xml;
+	}
 
-    public static BlockedErrorExtension from(Message message) {
-        XMPPError error = message.getError();
-        if (error == null) {
-            return null;
-        }
-        return error.getExtension(ELEMENT, NAMESPACE);
-    }
+	public static BlockedErrorExtension from(Message message) {
+		XMPPError error = message.getError();
+		if (error == null) {
+			return null;
+		}
+		return error.getExtension(ELEMENT, NAMESPACE);
+	}
 
-    /**
-     * 
-     * Check if a message contains a BlockedErrorExtension, which means that a
-     * message was blocked because the JID blocked the sender, and that was
-     * reflected back as an error message.
-     * 
-     * @param message
-     * @return true if the message contains a BlockedErrorExtension, false if
-     *         not
-     */
-    public static boolean isInside(Message message) {
-        return from(message) != null;
-    }
+	/**
+	 * 
+	 * Check if a message contains a BlockedErrorExtension, which means that a
+	 * message was blocked because the JID blocked the sender, and that was
+	 * reflected back as an error message.
+	 * 
+	 * @param message
+	 * @return true if the message contains a BlockedErrorExtension, false if
+	 *         not
+	 */
+	public static boolean isInside(Message message) {
+		return from(message) != null;
+	}
 
 }

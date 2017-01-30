@@ -30,72 +30,72 @@ import org.jivesoftware.smackx.bob.BoBManager;
  */
 public class BoBIQ extends IQ {
 
-    /**
-     * data element.
-     */
-    public static final String ELEMENT = "data";
+	/**
+	 * data element.
+	 */
+	public static final String ELEMENT = "data";
 
-    /**
-     * the IQ NAMESPACE.
-     */
-    public static final String NAMESPACE = BoBManager.NAMESPACE;
+	/**
+	 * the IQ NAMESPACE.
+	 */
+	public static final String NAMESPACE = BoBManager.NAMESPACE;
 
-    private final BoBHash bobHash;
-    private final BoBData bobData;
+	private final BoBHash bobHash;
+	private final BoBData bobData;
 
-    /**
-     * Bits of Binary IQ constructor.
-     * 
-     * @param bobHash
-     * @param bobData
-     */
-    public BoBIQ(BoBHash bobHash, BoBData bobData) {
-        super(ELEMENT, NAMESPACE);
-        this.bobHash = bobHash;
-        this.bobData = bobData;
-    }
+	/**
+	 * Bits of Binary IQ constructor.
+	 * 
+	 * @param bobHash
+	 * @param bobData
+	 */
+	public BoBIQ(BoBHash bobHash, BoBData bobData) {
+		super(ELEMENT, NAMESPACE);
+		this.bobHash = bobHash;
+		this.bobData = bobData;
+	}
 
-    /**
-     * Bits of Binary IQ constructor.
-     * 
-     * @param bobHash
-     */
-    public BoBIQ(BoBHash bobHash) {
-        this(bobHash, null);
-    }
+	/**
+	 * Bits of Binary IQ constructor.
+	 * 
+	 * @param bobHash
+	 */
+	public BoBIQ(BoBHash bobHash) {
+		this(bobHash, null);
+	}
 
-    /**
-     * Get the BoB hash.
-     * 
-     * @return the BoB hash
-     */
-    public BoBHash getBoBHash() {
-        return bobHash;
-    }
+	/**
+	 * Get the BoB hash.
+	 * 
+	 * @return the BoB hash
+	 */
+	public BoBHash getBoBHash() {
+		return bobHash;
+	}
 
-    /**
-     * Get the BoB data.
-     * 
-     * @return the BoB data
-     */
-    public BoBData getBoBData() {
-        return bobData;
-    }
+	/**
+	 * Get the BoB data.
+	 * 
+	 * @return the BoB data
+	 */
+	public BoBData getBoBData() {
+		return bobData;
+	}
 
-    @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.attribute("cid", bobHash.toCid());
+	@Override
+	protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+		xml.attribute("cid", bobHash.getCid());
 
-        if (bobData != null) {
-            xml.attribute("max-age", String.valueOf(bobData.getMaxAge()));
-            xml.attribute("type", bobData.getType());
-            xml.rightAngleBracket();
-            xml.escape(bobData.getBase64Encoded());
-        } else {
-            xml.setEmptyElement();
-        }
+		if (bobData != null) {
+			xml.optIntAttribute("max_age", bobData.getMaxAge());
+			xml.attribute("type", bobData.getType());
+			xml.rightAngleBracket();
+			xml.escape(bobData.getContentBase64Encoded());
+		} else {
+			xml.setEmptyElement();
+		}
 
-        return xml;
-    }
+		return xml;
+	}
 
 }

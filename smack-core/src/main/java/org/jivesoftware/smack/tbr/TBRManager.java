@@ -39,57 +39,57 @@ import org.jivesoftware.smack.tbr.element.TBRTokensIQ;
  */
 public final class TBRManager extends Manager {
 
-    public static final String AUTH_NAMESPACE = "erlang-solutions.com:xmpp:token-auth:0";
+	public static final String AUTH_NAMESPACE = "erlang-solutions.com:xmpp:token-auth:0";
 
-    static {
-        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
-            @Override
-            public void connectionCreated(XMPPConnection connection) {
-                getInstanceFor(connection);
-            }
-        });
-    }
+	static {
+		XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
+			@Override
+			public void connectionCreated(XMPPConnection connection) {
+				getInstanceFor(connection);
+			}
+		});
+	}
 
-    private static final Map<XMPPConnection, TBRManager> INSTANCES = new WeakHashMap<>();
+	private static final Map<XMPPConnection, TBRManager> INSTANCES = new WeakHashMap<>();
 
-    /**
-     * Get the singleton instance of TBRManager.
-     *
-     * @param connection
-     * @return the instance of TBRManager
-     */
-    public static synchronized TBRManager getInstanceFor(XMPPConnection connection) {
-        TBRManager tbrManager = INSTANCES.get(connection);
+	/**
+	 * Get the singleton instance of TBRManager.
+	 *
+	 * @param connection
+	 * @return the instance of TBRManager
+	 */
+	public static synchronized TBRManager getInstanceFor(XMPPConnection connection) {
+		TBRManager tbrManager = INSTANCES.get(connection);
 
-        if (tbrManager == null) {
-            tbrManager = new TBRManager(connection);
-            INSTANCES.put(connection, tbrManager);
-        }
+		if (tbrManager == null) {
+			tbrManager = new TBRManager(connection);
+			INSTANCES.put(connection, tbrManager);
+		}
 
-        return tbrManager;
-    }
+		return tbrManager;
+	}
 
-    private TBRManager(XMPPConnection connection) {
-        super(connection);
-    }
+	private TBRManager(XMPPConnection connection) {
+		super(connection);
+	}
 
-    /**
-     * Get tokens.
-     * 
-     * @return the tokens
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     */
-    public TBRTokens getTokens()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        TBRGetTokensIQ getTokensIQ = new TBRGetTokensIQ(connection().getUser().asBareJid());
+	/**
+	 * Get tokens.
+	 * 
+	 * @return the tokens
+	 * @throws NoResponseException
+	 * @throws XMPPErrorException
+	 * @throws NotConnectedException
+	 * @throws InterruptedException
+	 */
+	public TBRTokens getTokens()
+			throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+		TBRGetTokensIQ getTokensIQ = new TBRGetTokensIQ(connection().getUser().asBareJid());
 
-        IQ responseIq = connection().createPacketCollectorAndSend(getTokensIQ).nextResultOrThrow();
-        TBRTokensIQ tokensIQ = (TBRTokensIQ) responseIq;
+		IQ responseIq = connection().createStanzaCollectorAndSend(getTokensIQ).nextResultOrThrow();
+		TBRTokensIQ tokensIQ = (TBRTokensIQ) responseIq;
 
-        return new TBRTokens(tokensIQ.getAccessToken(), tokensIQ.getRefreshToken());
-    }
+		return new TBRTokens(tokensIQ.getAccessToken(), tokensIQ.getRefreshToken());
+	}
 
 }
